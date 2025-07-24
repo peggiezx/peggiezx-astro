@@ -21,6 +21,7 @@ import { PERSONAL_INFO } from '../consts';
             <path d="M23.546 10.93L13.067.452c-.604-.603-1.582-.603-2.188 0L8.708 2.627l2.76 2.76c.645-.215 1.379-.07 1.889.441.516.515.658 1.258.438 1.9l2.658 2.66c.645-.223 1.387-.078 1.9.435.721.72.721 1.884 0 2.604-.719.719-1.881.719-2.6 0-.539-.541-.674-1.337-.404-1.996L12.86 8.955v6.525c.176.086.342.203.488.348.713.721.713 1.883 0 2.6-.719.721-1.889.721-2.609 0-.719-.719-.719-1.879 0-2.598.182-.18.387-.316.605-.406V8.835c-.217-.091-.424-.222-.6-.401-.545-.545-.676-1.342-.396-2.009L7.636 3.7.45 10.881c-.6.605-.6 1.584 0 2.189l10.48 10.477c.604.604 1.582.604 2.188 0l10.43-10.43c.603-.603.603-1.582-.002-2.187"/>
           </svg>
           <span>Git</span>
+
         </div>
         
         <!-- Python -->
@@ -85,14 +86,15 @@ import { PERSONAL_INFO } from '../consts';
 
 <style>
   .hero {
-    min-height: 100vh;
+    height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
     position: relative;
     background: #fff;
-    padding-top: 8rem;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
   }
   
   .hero-container {
@@ -103,6 +105,7 @@ import { PERSONAL_INFO } from '../consts';
     gap: 4rem;
     align-items: center;
     padding: 2rem;
+    margin-top: -8rem;
   }
   
   .hero-left {
@@ -116,7 +119,7 @@ import { PERSONAL_INFO } from '../consts';
   
   .hero h1 {
     font-size: 3rem;
-    font-weight: 600;
+    font-weight: 300;
     margin-bottom: 1.5rem;
     color: #333;
   }
@@ -124,9 +127,8 @@ import { PERSONAL_INFO } from '../consts';
   .typewriter {
     overflow: hidden;
     white-space: nowrap;
-    border-right: 3px solid #333;
-    animation: blink-caret 1s step-end infinite;
   }
+  
   
   .rotating-text {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
@@ -138,14 +140,6 @@ import { PERSONAL_INFO } from '../consts';
     font-weight: 700;
   }
   
-  @keyframes blink-caret {
-    from, to {
-      border-color: transparent;
-    }
-    50% {
-      border-color: #667eea;
-    }
-  }
   
   @keyframes gradient-shift {
     0% {
@@ -161,6 +155,7 @@ import { PERSONAL_INFO } from '../consts';
   
   .hero-description {
     font-size: 1.1rem;
+    font-weight: 300;
     color: #666;
     line-height: 1.6;
     margin-bottom: 3rem;
@@ -172,12 +167,9 @@ import { PERSONAL_INFO } from '../consts';
   
   .skills h3 {
     font-size: 1.2rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #333;
     margin-bottom: 2rem;
-    font-weight: 600;
+    font-weight: 300;
   }
   
   .skills-grid {
@@ -210,12 +202,12 @@ import { PERSONAL_INFO } from '../consts';
   .skill span {
     font-size: 0.85rem;
     color: #333;
-    font-weight: 500;
+    font-weight: 300;
   }
   
   .scroll-indicator {
     position: absolute;
-    bottom: 2rem;
+    bottom: 10rem;
     left: 50%;
     transform: translateX(-50%);
   }
@@ -224,15 +216,20 @@ import { PERSONAL_INFO } from '../consts';
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     color: #999;
+    border: 2px solid #ddd;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
     transition: all 0.3s ease;
     animation: bounce 2s infinite;
   }
   
   .scroll-indicator a:hover {
     color: #333;
+    border-color: #999;
+    background: white;
   }
   
   .scroll-indicator svg {
@@ -298,14 +295,15 @@ import { PERSONAL_INFO } from '../consts';
     if (!typewriterElement) return;
     
     const phrases = [
-      'Peggie Zhong',
-      'Denver-based',
-      'an avid learner',
-      'a Scorpio',
-      'INFJ',
-      'empathetic',
-      'a problem solver',
-      'a spicy food lover'
+      'Peggie Zhong.',
+      'Denver-based.',
+      'an avid learner.',
+      'a Scorpio.',
+      'an INFJ.',
+      'empathetic.',
+      'a problem solver.',
+      'a spicy food lover.',
+      'a communicator.'
     ];
     
     let phraseIndex = 0;
