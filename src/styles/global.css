@@ -43,7 +43,8 @@ a:hover {
 
 /* Container and layout */
 .container {
-  max-width: 800px;
+  max-width: 1400px;
+  width: 70%;
   margin: 0 auto;
   padding: 0 2rem;
 }
@@ -56,7 +57,7 @@ header {
 
 header nav {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
 }
 
@@ -218,6 +219,7 @@ footer p {
 /* Responsive */
 @media (max-width: 768px) {
   .container {
+    width: 90%;
     padding: 0 1rem;
   }
   

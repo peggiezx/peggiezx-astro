@@ -1,16 +1,10 @@
 ---
-import { NAV_ITEMS, PERSONAL_INFO } from '../consts';
-
-const pathname = new URL(Astro.request.url).pathname;
+import { NAV_ITEMS } from '../consts';
 ---
 
 <header>
   <div class="container">
     <nav>
-      <a href="/">
-        {PERSONAL_INFO.name}
-      </a>
-      
       <div class="nav-links">
         {NAV_ITEMS.map(item => (
           <a href={item.href}>
