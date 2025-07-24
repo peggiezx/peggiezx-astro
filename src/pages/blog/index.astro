@@ -1,0 +1,38 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const title = 'Blog';
+const description = 'Articles on developer advocacy, cloud, and software engineering';
+
+// Fetch all blog posts from the content collection
+const posts = await getCollection('blog');
+
+// Sort by publication date (newest first)
+posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<BaseLayout title={title} description={description}>
+  <section class="py-12">
+    <h1 class="text-4xl font-bold text-fg mb-6">Blog</h1>
+    <ul class="space-y-6">
+      {posts.map(post => (
+        <li key={post.slug}>
+          <a
+            href={`/blog/${post.slug}/`}
+            class="text-2xl font-semibold text-accent hover:underline"
+          >
+            {post.data.title}
+          </a>
+          <p class="text-sm text-fg/60">
+            {post.data.pubDate.toLocaleDateString(undefined, {
+              year: 'numeric', 
+              month: 'long', 
+              day: 'numeric'
+            })}
+          </p>
+        </li>
+      ))}
+    </ul>
+  </section>
+</BaseLayout>

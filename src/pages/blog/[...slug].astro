@@ -1,0 +1,56 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+// Pre-generate all blog slugs
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map(post => ({ 
+    params: { slug: post.slug },
+    props: { post }
+  }));
+}
+
+// Get the post from props (passed from getStaticPaths)
+const { post } = Astro.props;
+
+// Destructure frontmatter into local variables
+const { title, description = '', pubDate, heroImage } = post.data;
+
+// Render the MDX content
+const { Content } = await post.render();
+---
+
+<BaseLayout 
+  title={`${title} - Your Blog`}
+  description={description}
+  type="article"
+  publishedTime={pubDate.toISOString()}
+  image={heroImage?.src}
+>
+  <article class="max-w-4xl mx-auto px-4 py-12">
+    <header class="mb-8">
+      {heroImage && (
+        <img 
+          src={heroImage.src} 
+          alt={heroImage.alt || title}
+          class="w-full h-64 object-cover rounded-lg mb-6"
+        />
+      )}
+      <h1 class="text-4xl font-bold text-fg mb-4">{title}</h1>
+      <div class="flex items-center text-sm text-fg/60 mb-6">
+        <time datetime={pubDate.toISOString()}>
+          {pubDate.toLocaleDateString(undefined, {
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric'
+          })}
+        </time>
+      </div>
+    </header>
+    
+    <div class="prose prose-invert prose-lg max-w-none">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>

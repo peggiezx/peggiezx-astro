@@ -1,11 +1,95 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import { getCollection } from 'astro:content';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+// Get recent blog posts
+const posts = await getCollection('blog');
+posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const recentPosts = posts.slice(0, 3);
 ---
 
-<Layout>
-	<Welcome />
-</Layout>
+<BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
+  <Hero />
+
+  <section id="projects">
+    <div>
+      <div>
+        <h2>Featured Projects</h2>
+        <p>
+          A showcase of my recent work in developer tools, cloud computing, and software engineering.
+        </p>
+      </div>
+
+      <div>
+        <ProjectCard
+          title="Git Conflict Trainer CLI"
+          desc="Sandboxed tool to master merge-conflict resolution with hands-on practice scenarios."
+          image="/images/git-trainer.jpg"
+          href="/projects/git-trainer/"
+          stack={["Go", "CLI", "Git", "Docker"]}
+        />
+        
+        <ProjectCard
+          title="Tiny-Streak Habit Tracker"
+          desc="iOS app with brain-hack timers and house-building animations to build lasting habits."
+          image="/images/habit-tracker.jpg"
+          href="/projects/habit-tracker/"
+          stack={["Swift", "iOS", "SwiftUI", "Core Data"]}
+        />
+      </div>
+
+      <div>
+        <a href="/projects">
+          View All Projects
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div>
+      <div>
+        <h2>Latest Articles</h2>
+        <p>
+          Insights on developer advocacy, cloud technologies, and engineering best practices.
+        </p>
+      </div>
+
+      <div>
+        {recentPosts.map(post => (
+          <article>
+            <a href={`/blog/${post.slug}/`}>
+              <h3>
+                {post.data.title}
+              </h3>
+              <p>
+                {post.data.description || 'No description available'}
+              </p>
+              <div>
+                <time>
+                  {post.data.pubDate.toLocaleDateString(undefined, {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                  })}
+                </time>
+                <span>
+                  Read More →
+                </span>
+              </div>
+            </a>
+          </article>
+        ))}
+      </div>
+
+      <div>
+        <a href="/blog">
+          View All Posts
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
