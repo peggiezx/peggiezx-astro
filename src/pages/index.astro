@@ -1,7 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
-import ProjectCard from '../components/ProjectCard.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 import { getCollection } from 'astro:content';
 
@@ -9,40 +8,41 @@ import { getCollection } from 'astro:content';
 const posts = await getCollection('blog');
 posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 const recentPosts = posts.slice(0, 3);
+
+// Get featured projects
+const allProjects = await getCollection('projects');
+const featuredProjects = allProjects.filter(project => project.data.featured);
 ---
 
 <BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
   <Hero />
 
-  <div class="container">
+  <div class="container" style="margin-top: -4rem;">
     <section id="projects">
       <h2>Featured Projects</h2>
       <p>
         A showcase of my recent work in developer tools, cloud computing, and software engineering.
       </p>
 
-      <div class="projects-grid">
-        <div class="project-card">
-          <h3>Git Conflict Trainer CLI</h3>
-          <p>Sandboxed tool to master merge-conflict resolution with hands-on practice scenarios.</p>
-          <div class="tech-stack">
-            <span class="tech-tag">Go</span>
-            <span class="tech-tag">CLI</span>
-            <span class="tech-tag">Git</span>
-            <span class="tech-tag">Docker</span>
-          </div>
+      <div class="gallery-grid">
+        {featuredProjects.map(project => (
+        <div class="gallery-item">
+          <a href={`/projects/${project.slug}/`} class="gallery-link">
+            <div class="gallery-image">
+              <img src={project.data.image.src} alt={project.data.title} />
+            </div>
+            <div class="gallery-content">
+              <h3>{project.data.title}</h3>
+              <p>{project.data.description}</p>
+              <div class="tech-stack">
+                {project.data.stack.map(tech => (
+                  <span class="tech-tag">{tech}</span>
+                ))}
+              </div>
+            </div>
+          </a>
         </div>
-        
-        <div class="project-card">
-          <h3>Tiny-Streak Habit Tracker</h3>
-          <p>iOS app with brain-hack timers and house-building animations to build lasting habits.</p>
-          <div class="tech-stack">
-            <span class="tech-tag">Swift</span>
-            <span class="tech-tag">iOS</span>
-            <span class="tech-tag">SwiftUI</span>
-            <span class="tech-tag">Core Data</span>
-          </div>
-        </div>
+        ))}
       </div>
 
       <div style="text-align: center; margin-top: 2rem;">
@@ -66,7 +66,7 @@ const recentPosts = posts.slice(0, 3);
                 {post.data.title}
               </h3>
               <p>
-                {post.data.description || 'No description available'}
+                No description available
               </p>
               <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
                 <time>

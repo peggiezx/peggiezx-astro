@@ -101,20 +101,22 @@ import { PERSONAL_INFO } from '../consts';
     max-width: 1400px;
     width: 70%;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 60% 40%;
     gap: 4rem;
-    align-items: center;
+    align-items: flex-start;
     padding: 2rem;
     margin-top: -8rem;
   }
   
   .hero-left {
     text-align: left;
+    min-width: 0;
   }
   
   .hero-right {
     display: flex;
     justify-content: center;
+    min-width: 0;
   }
   
   .hero h1 {
@@ -127,6 +129,8 @@ import { PERSONAL_INFO } from '../consts';
   .typewriter {
     overflow: hidden;
     white-space: nowrap;
+    min-height: 3.6rem;
+    width: 100%;
   }
   
   
@@ -163,6 +167,9 @@ import { PERSONAL_INFO } from '../consts';
   
   .skills {
     text-align: center;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
   }
   
   .skills h3 {
