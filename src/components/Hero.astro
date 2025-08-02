@@ -5,7 +5,8 @@ import { PERSONAL_INFO } from '../consts';
 <section class="hero">
   <div class="hero-container">
     <div class="hero-left">
-      <h1 class="typewriter" id="typewriter-text">I am </h1>
+      <h2 class="greeting">Hey, I'm Peggie Zhong.</h2>
+      <h1 class="typewriter" id="typewriter-text">I'm </h1>
       <p class="hero-description">
         I'm a CS graduate from Arizona State University, passionate about building developer tools and advocating for better engineering practices. Currently seeking opportunities in software development.
       </p>
@@ -93,8 +94,8 @@ import { PERSONAL_INFO } from '../consts';
     align-items: center;
     position: relative;
     background: #fff;
-    padding-top: 2rem;
-    padding-bottom: 2rem;
+    padding-top: 80px;
+    box-sizing: border-box;
   }
   
   .hero-container {
@@ -103,9 +104,10 @@ import { PERSONAL_INFO } from '../consts';
     display: grid;
     grid-template-columns: 60% 40%;
     gap: 4rem;
-    align-items: flex-start;
+    align-items: center;
     padding: 2rem;
-    margin-top: -8rem;
+    flex: 1;
+    max-height: calc(100vh - 160px);
   }
   
   .hero-left {
@@ -119,6 +121,14 @@ import { PERSONAL_INFO } from '../consts';
     min-width: 0;
   }
   
+  .greeting {
+    font-size: 3rem;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+    color: #10b981;
+    letter-spacing: 0.02em;
+  }
+
   .hero h1 {
     font-size: 3rem;
     font-weight: 300;
@@ -135,7 +145,7 @@ import { PERSONAL_INFO } from '../consts';
   
   
   .rotating-text {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
+    background: linear-gradient(135deg, #10b981 0%, #047857 50%, #059669 100%);
     background-size: 300% 300%;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -214,7 +224,7 @@ import { PERSONAL_INFO } from '../consts';
   
   .scroll-indicator {
     position: absolute;
-    bottom: 10rem;
+    bottom: 2rem;
     left: 50%;
     transform: translateX(-50%);
   }
@@ -225,8 +235,8 @@ import { PERSONAL_INFO } from '../consts';
     justify-content: center;
     width: 50px;
     height: 50px;
-    color: #999;
-    border: 2px solid #ddd;
+    color: #10b981;
+    border: 2px solid #10b981;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.9);
     transition: all 0.3s ease;
@@ -234,9 +244,9 @@ import { PERSONAL_INFO } from '../consts';
   }
   
   .scroll-indicator a:hover {
-    color: #333;
-    border-color: #999;
-    background: white;
+    color: white;
+    border-color: #10b981;
+    background: #10b981;
   }
   
   .scroll-indicator svg {
@@ -258,7 +268,8 @@ import { PERSONAL_INFO } from '../consts';
   
   @media (max-width: 768px) {
     .hero {
-      padding-top: 6rem;
+      height: 100vh;
+      padding-top: 80px;
     }
     
     .hero-container {
@@ -266,12 +277,17 @@ import { PERSONAL_INFO } from '../consts';
       grid-template-columns: 1fr;
       gap: 3rem;
       text-align: center;
+      max-height: calc(100vh - 160px);
     }
     
     .hero-left {
       text-align: center;
     }
     
+    .greeting {
+      font-size: 1.2rem;
+    }
+
     .hero h1 {
       font-size: 2.5rem;
     }
@@ -293,6 +309,10 @@ import { PERSONAL_INFO } from '../consts';
     .skill span {
       font-size: 0.8rem;
     }
+    
+    .scroll-indicator {
+      bottom: 1.5rem;
+    }
   }
 </style>
 
@@ -302,7 +322,6 @@ import { PERSONAL_INFO } from '../consts';
     if (!typewriterElement) return;
     
     const phrases = [
-      'Peggie Zhong.',
       'Denver-based.',
       'an avid learner.',
       'a Scorpio.',
@@ -316,7 +335,7 @@ import { PERSONAL_INFO } from '../consts';
     let phraseIndex = 0;
     let charIndex = 0;
     let isDeleting = false;
-    const baseText = 'I am ';
+    const baseText = 'I\'m ';
     
     function typeWriter() {
       const currentPhrase = phrases[phraseIndex];
