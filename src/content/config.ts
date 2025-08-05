@@ -7,6 +7,8 @@ export const collections = {
       pubDate: z.date(),
       tags: z.array(z.string()).optional(),
       draft: z.boolean().optional(),
+      project: z.string().optional(),
+      day: z.number().optional(),
     }),
   }),
   projects: defineCollection({

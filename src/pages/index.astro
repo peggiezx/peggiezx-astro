@@ -4,10 +4,63 @@ import Hero from '../components/Hero.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 import { getCollection } from 'astro:content';
 
-// Get recent blog posts
-const posts = await getCollection('blog');
-posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
-const recentPosts = posts.slice(0, 3);
+// Get blog posts organized by project
+const allPosts = await getCollection('blog');
+allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+// Group posts by project (extracted from slug path)
+const projectGroups = new Map();
+allPosts.forEach(post => {
+  const projectName = post.slug.split('/')[0];
+  if (!projectGroups.has(projectName)) {
+    projectGroups.set(projectName, []);
+  }
+  projectGroups.get(projectName).push(post);
+});
+
+// Project descriptions
+const projectDescriptions = {
+  'circleshare': 'My recent social journal application',
+  'technical-training': 'How I create technical curriculum to help developers',  
+  'developer-advocacy': 'How I use my voice to reach out to a broader community'
+};
+
+// Convert to array and get most recent projects
+const recentProjects = Array.from(projectGroups.entries())
+  .map(([project, posts]) => ({
+    name: project,
+    displayName: project.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+    description: projectDescriptions[project] || 'Learning and building in public',
+    posts: posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()),
+    latestPost: posts[0],
+    totalPosts: posts.length
+  }))
+  .sort((a, b) => b.latestPost.data.pubDate.valueOf() - a.latestPost.data.pubDate.valueOf())
+  .slice(0, 3); // Back to 3 projects
+
+// Placeholder videos - replace with actual YouTube data later
+const featuredVideos = [
+  {
+    id: 'placeholder-1',
+    title: 'Building a React Dashboard from Scratch',
+    description: 'Learn how to create a responsive dashboard with React, TypeScript, and Tailwind CSS',
+    thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg',
+    url: 'https://youtube.com/watch?v=dQw4w9WgXcQ',
+    duration: '24:15',
+    publishedAt: new Date('2024-01-15'),
+    tags: ['React', 'TypeScript', 'Tutorial']
+  },
+  {
+    id: 'placeholder-2',
+    title: 'FastAPI Complete Tutorial',
+    description: 'Build a full-stack application with FastAPI and PostgreSQL from zero to deployment',
+    thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg',
+    url: 'https://youtube.com/watch?v=dQw4w9WgXcQ',
+    duration: '18:42',
+    publishedAt: new Date('2024-01-10'),
+    tags: ['FastAPI', 'Python', 'Backend']
+  }
+];
 
 // Get featured projects
 const allProjects = await getCollection('projects');
@@ -80,41 +133,116 @@ const featuredProjects = allProjects.filter(project => project.data.featured);
     </section>
 
     <section>
-      <h2>Latest Articles</h2>
+      <h2>Blog</h2>
       <p>
-        Insights on developer advocacy, cloud technologies, and engineering best practices.
+        Follow my journey building projects and learning new technologies through daily logs.
       </p>
 
-      <div class="blog-grid">
-        {recentPosts.map(post => (
-          <article class="blog-post">
-            <a href={`/blog/${post.slug}/`}>
-              <h3>
-                {post.data.title}
-              </h3>
-              <p>
-                No description available
-              </p>
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+      <div class="blog-projects-grid">
+        {recentProjects.map(project => (
+          <article class="project-blog-card" data-project={project.name}>
+            <div class="project-header">
+              <div class="project-info">
+                <h3>{project.displayName}</h3>
+                <p class="project-description">{project.description}</p>
+                <span class="post-count">{project.totalPosts} entries</span>
+              </div>
+              <button class="expand-btn" aria-label="Expand project">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </button>
+            </div>
+            
+            <div class="latest-post">
+              <a href={`/blog/${project.latestPost.slug}/`}>
+                <h4>{project.latestPost.data.title}</h4>
                 <time>
-                  {post.data.pubDate.toLocaleDateString(undefined, {
+                  {project.latestPost.data.pubDate.toLocaleDateString(undefined, {
                     year: 'numeric',
                     month: 'short',
                     day: 'numeric'
                   })}
                 </time>
-                <span style="color: #0066cc;">
-                  Read More →
-                </span>
-              </div>
-            </a>
+              </a>
+            </div>
+            
+            <div class="post-list" style="display: none;">
+              {project.posts.slice(1).map(post => (
+                <a href={`/blog/${post.slug}/`} class="post-item">
+                  <span class="post-title">{post.data.title}</span>
+                  <time>
+                    {post.data.pubDate.toLocaleDateString(undefined, {
+                      month: 'short',
+                      day: 'numeric'
+                    })}
+                  </time>
+                </a>
+              ))}
+            </div>
           </article>
         ))}
       </div>
 
       <div style="text-align: center; margin-top: 2rem;">
-        <a href="/blog" class="btn btn">
-          View All Posts
+        <a href="/blog" class="btn">
+          View All Projects
+        </a>
+      </div>
+    </section>
+
+    <section>
+      <h2>Videos</h2>
+      <p>
+        Watch me build projects and teach technologies step by step through comprehensive tutorials.
+      </p>
+
+      <div class="videos-grid">
+        {featuredVideos.map(video => (
+          <article class="video-card">
+            <div class="video-thumbnail">
+              <img src={video.thumbnail} alt={video.title} />
+              <div class="play-overlay">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+              </div>
+              <span class="video-duration">{video.duration}</span>
+            </div>
+            
+            <div class="video-content">
+              <div class="video-header">
+                <h3>Tutorial</h3>
+                <span class="video-badge">YouTube</span>
+              </div>
+              
+              <a href={video.url} target="_blank" rel="noopener noreferrer">
+                <h4>{video.title}</h4>
+                <p class="video-description">{video.description}</p>
+                
+                <div class="video-meta">
+                  <time>
+                    {video.publishedAt.toLocaleDateString(undefined, {
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric'
+                    })}
+                  </time>
+                  <div class="video-tags">
+                    {video.tags.map(tag => (
+                      <span class="video-tag">{tag}</span>
+                    ))}
+                  </div>
+                </div>
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <div style="text-align: center; margin-top: 2rem;">
+        <a href="/videos" class="btn">
+          View All Videos
         </a>
       </div>
     </section>
@@ -266,4 +394,306 @@ const featuredProjects = allProjects.filter(project => project.data.featured);
     backdrop-filter: blur(10px) !important;
     margin: 2rem 0 !important;
   }
+  
+  /* Project blog cards styling */
+  .blog-projects-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin: 2rem 0;
+  }
+  
+  /* Videos grid styling */
+  .videos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin: 2rem 0;
+  }
+  
+  .project-blog-card {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    border-radius: 12px !important;
+    padding: 1.5rem !important;
+    transition: all 0.2s ease;
+    grid-column: span 1;
+  }
+  
+  .project-blog-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  .project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  .project-info h3 {
+    margin: 0 0 0.25rem 0 !important;
+    color: #1a202c !important;
+    font-size: 1.2rem !important;
+  }
+  
+  .project-description {
+    margin: 0 0 0.5rem 0 !important;
+    color: #6b7280 !important;
+    font-size: 0.9rem !important;
+    font-style: italic;
+  }
+  
+  .post-count {
+    color: #6b7280 !important;
+    font-size: 0.85rem !important;
+    font-weight: 500;
+  }
+  
+  .expand-btn {
+    background: none;
+    border: none;
+    color: #6b7280;
+    cursor: pointer;
+    padding: 0.25rem;
+    transition: all 0.2s ease;
+  }
+  
+  .expand-btn:hover {
+    color: #10b981;
+    transform: scale(1.1);
+  }
+  
+  .expand-btn svg {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+  }
+  
+  .expand-btn.expanded svg {
+    transform: rotate(180deg);
+  }
+  
+  .latest-post a {
+    text-decoration: none;
+    display: block;
+  }
+  
+  .latest-post h4 {
+    margin: 0 0 0.5rem 0 !important;
+    color: #1a202c !important;
+    font-size: 1rem !important;
+    font-weight: 600;
+  }
+  
+  .latest-post time {
+    color: #6b7280 !important;
+    font-size: 0.85rem;
+  }
+  
+  .post-list {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  .post-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+  }
+  
+  .post-item:last-child {
+    border-bottom: none;
+  }
+  
+  .post-item:hover {
+    background: rgba(16, 185, 129, 0.05);
+    border-radius: 6px;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+  
+  .post-title {
+    color: #2d3748 !important;
+    font-weight: 500;
+    flex: 1;
+  }
+  
+  .post-item time {
+    color: #6b7280 !important;
+    font-size: 0.8rem;
+    margin-left: 1rem;
+  }
+  
+  /* Video card styling */
+  .video-card {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    border-radius: 12px !important;
+    overflow: hidden;
+    transition: all 0.2s ease;
+  }
+  
+  .video-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  .video-thumbnail {
+    position: relative;
+    width: 100%;
+    height: 140px;
+    overflow: hidden;
+  }
+  
+  .video-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .play-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    transition: all 0.2s ease;
+  }
+  
+  .video-card:hover .play-overlay {
+    background: rgba(16, 185, 129, 0.9);
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+  
+  .play-overlay svg {
+    width: 24px;
+    height: 24px;
+    margin-left: 2px;
+  }
+  
+  .video-duration {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+  
+  .video-content {
+    padding: 1.25rem;
+  }
+  
+  .video-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  .video-header h3 {
+    margin: 0 !important;
+    color: #1a202c !important;
+    font-size: 1rem !important;
+  }
+  
+  .video-badge {
+    background: #ff0000;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  
+  .video-content a {
+    text-decoration: none;
+    display: block;
+  }
+  
+  .video-content h4 {
+    margin: 0 0 0.5rem 0 !important;
+    color: #1a202c !important;
+    font-size: 0.95rem !important;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  
+  .video-description {
+    color: #6b7280 !important;
+    font-size: 0.8rem !important;
+    line-height: 1.4;
+    margin: 0 0 1rem 0 !important;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .video-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1rem;
+  }
+  
+  .video-meta time {
+    color: #6b7280 !important;
+    font-size: 0.85rem;
+  }
+  
+  .video-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  
+  .video-tag {
+    background: #6b7280 !important;
+    color: white !important;
+    padding: 0.25rem 0.5rem !important;
+    font-size: 0.7rem !important;
+    border-radius: 12px !important;
+    font-weight: 500;
+  }
 </style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const expandBtns = document.querySelectorAll('.expand-btn');
+    
+    expandBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const card = this.closest('.project-blog-card');
+        const postList = card.querySelector('.post-list');
+        const isExpanded = this.classList.contains('expanded');
+        
+        if (isExpanded) {
+          // Collapse
+          postList.style.display = 'none';
+          this.classList.remove('expanded');
+        } else {
+          // Expand
+          postList.style.display = 'block';
+          this.classList.add('expanded');
+        }
+      });
+    });
+  });
+</script>

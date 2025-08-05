@@ -6,6 +6,7 @@ export const NAV_ITEMS = [
   { name: "Home", href: "/" },
   { name: "Projects", href: "/projects/" },
   { name: "Blog", href: "/blog/" },
+  { name: "Videos", href: "/videos/" },
 ];
 
 export const PERSONAL_INFO = {
