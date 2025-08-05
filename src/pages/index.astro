@@ -93,3 +93,122 @@ const featuredProjects = allProjects.filter(project => project.data.featured);
     </section>
   </div>
 </BaseLayout>
+
+<style>
+  body {
+    background: url('/images/hero-bg-2.png') center/cover no-repeat fixed;
+  }
+  
+  #projects h2 {
+    color: #1a202c;
+    font-weight: 700;
+  }
+  
+  #projects p {
+    color: #2d3748;
+    font-weight: 500;
+  }
+  
+  #projects .gallery-content h3 {
+    color: #1a202c;
+    font-weight: 600;
+  }
+  
+  #projects .gallery-content p {
+    color: #2d3748;
+    font-weight: 400;
+  }
+  
+  /* Button styling */
+  .btn {
+    background: #10b981 !important;
+    color: white !important;
+    border: 2px solid #10b981 !important;
+    font-weight: 600;
+  }
+  
+  .btn:hover {
+    background: #047857 !important;
+    border-color: #047857 !important;
+    color: white !important;
+  }
+  
+  /* Latest Articles section */
+  section h2:not(#projects h2) {
+    color: #1a202c;
+    font-weight: 700;
+  }
+  
+  section p:not(#projects p) {
+    color: #2d3748;
+    font-weight: 500;
+  }
+  
+  .blog-post h3 {
+    color: #1a202c !important;
+    font-weight: 600;
+  }
+  
+  .blog-post p {
+    color: #2d3748 !important;
+  }
+  
+  .blog-post time {
+    color: #4a5568 !important;
+  }
+  
+  .blog-post span {
+    color: #10b981 !important;
+    font-weight: 600;
+  }
+  
+  /* Project cards styling */
+  .gallery-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+    gap: 1.5rem !important;
+  }
+  
+  .gallery-item {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+    aspect-ratio: 1 / 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  
+  .gallery-item:hover {
+    transform: translateY(-4px) !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
+    border-color: rgba(0, 0, 0, 0.2) !important;
+  }
+  
+  .gallery-image {
+    height: 45% !important;
+    flex-shrink: 0 !important;
+  }
+  
+  .gallery-content {
+    padding: 1.25rem !important;
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+  }
+  
+  /* Tech tags styling */
+  .gallery-content .tech-tag {
+    background: #10b981 !important;
+    color: white !important;
+    border: 1px solid #10b981 !important;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  
+  .gallery-content .tech-tag:hover {
+    background: #047857 !important;
+    border-color: #047857 !important;
+    transform: translateY(-1px);
+  }
+</style>
