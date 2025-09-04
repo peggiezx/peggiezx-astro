@@ -72,14 +72,14 @@ const featuredProjects = allProjects.filter(project => project.data.featured);
 
   <div class="container" style="margin-top: -2rem;">
     <section id="projects">
-      <h2>Featured Projects</h2>
-      <p>
+      <h2 style="padding-left: 2rem;">Featured Projects</h2>
+      <p style="padding-left: 2rem;">
         A showcase of my recent work in developer tools, cloud computing, and software engineering.
       </p>
 
-      <div class="gallery-grid">
-        {featuredProjects.map(project => (
-        <div class="gallery-item">
+      <div class="gallery-grid" id="projects-grid" style="margin-left: 2rem; gap: 3rem;">
+        {featuredProjects.slice(0, 2).map(project => (
+        <div class="gallery-item initial-item">
           <a href={`/projects/${project.slug}/`} class="gallery-link">
             <div class="gallery-image">
               <img src={project.data.image.src} alt={project.data.title} />
@@ -97,8 +97,27 @@ const featuredProjects = allProjects.filter(project => project.data.featured);
         </div>
         ))}
         
-        <!-- Placeholder cards -->
-        <div class="gallery-item placeholder-card">
+        {featuredProjects.slice(2).map(project => (
+        <div class="gallery-item hidden-item" style="display: none;">
+          <a href={`/projects/${project.slug}/`} class="gallery-link">
+            <div class="gallery-image">
+              <img src={project.data.image.src} alt={project.data.title} />
+            </div>
+            <div class="gallery-content">
+              <h3>{project.data.title}</h3>
+              <p>{project.data.description}</p>
+              <div class="tech-stack">
+                {project.data.stack.map(tech => (
+                  <span class="tech-tag">{tech}</span>
+                ))}
+              </div>
+            </div>
+          </a>
+        </div>
+        ))}
+        
+        <!-- Placeholder cards - first one visible initially -->
+        <div class="gallery-item placeholder-card initial-item">
           <div class="gallery-image placeholder-image">
             <div class="placeholder-content">+</div>
           </div>
@@ -111,7 +130,7 @@ const featuredProjects = allProjects.filter(project => project.data.featured);
           </div>
         </div>
         
-        <div class="gallery-item placeholder-card">
+        <div class="gallery-item placeholder-card hidden-item" style="display: none;">
           <div class="gallery-image placeholder-image">
             <div class="placeholder-content">★</div>
           </div>
@@ -124,7 +143,7 @@ const featuredProjects = allProjects.filter(project => project.data.featured);
           </div>
         </div>
         
-        <div class="gallery-item placeholder-card">
+        <div class="gallery-item placeholder-card hidden-item" style="display: none;">
           <div class="gallery-image placeholder-image">
             <div class="placeholder-content">⚡</div>
           </div>
@@ -137,82 +156,138 @@ const featuredProjects = allProjects.filter(project => project.data.featured);
           </div>
         </div>
       </div>
-
+      
       <div style="text-align: center; margin-top: 2rem;">
-        <a href="/projects" class="btn">
+        <button class="btn" id="view-all-projects-btn">
           View All Projects
-        </a>
+        </button>
       </div>
+
     </section>
 
     <section id="blog">
-      <h2>Blog</h2>
-      <p>
+      <h2 style="padding-left: 2rem;">Blog</h2>
+      <p style="padding-left: 2rem;">
         Follow my journey building projects and learning new technologies through daily logs.
       </p>
 
-      <div class="blog-projects-grid">
-        {recentProjects.map((project, index) => (
-          <article class="project-blog-card" data-project={project.name}>
-            <div class="project-banner" data-project-index={index}>
-              <div class="project-info">
-                <h3>{project.displayName}</h3>
-                <p class="project-description">{project.description}</p>
-                <span class="post-count">{project.totalPosts} entries</span>
+      <div class="blog-projects-grid" id="blog-grid">
+        {recentProjects.slice(0, 1).map((project, index) => (
+          <article class="project-blog-card initial-blog-item" data-project={project.name}>
+            <div class="topic-header" data-project-index={index}>
+              <div class="topic-info">
+                <div class="topic-title">{project.displayName}</div>
+                <div class="topic-description">{project.description}</div>
+                <div class="topic-meta">{project.totalPosts} entries</div>
               </div>
-              <button class="expand-btn expanded" aria-label="Collapse project">
+              <button class="collapse-btn expanded" aria-label="Collapse entries">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                 </svg>
               </button>
             </div>
             
-            <div class="latest-post">
-              <a href={`/blog/${project.latestPost.slug}/`}>
-                <h4>{project.latestPost.data.title}</h4>
-                <time>
-                  {project.latestPost.data.pubDate.toLocaleDateString(undefined, {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric'
-                  })}
-                </time>
-              </a>
-            </div>
-            
-            <div class="post-list">
-              {project.posts.slice(1).map(post => (
-                <a href={`/blog/${post.slug}/`} class="post-item">
-                  <span class="post-title">{post.data.title}</span>
-                  <time>
-                    {post.data.pubDate.toLocaleDateString(undefined, {
+            <div class="blog-entries">
+              <a href={`/blog/${project.latestPost.slug}/`} class="entry-item featured-entry">
+                <div class="entry-content">
+                  <h4 class="entry-title">{project.latestPost.data.title}</h4>
+                  <time class="entry-date">
+                    {project.latestPost.data.pubDate.toLocaleDateString(undefined, {
+                      year: 'numeric',
                       month: 'short',
                       day: 'numeric'
                     })}
                   </time>
-                </a>
-              ))}
+                </div>
+                <div class="entry-badge">Latest</div>
+              </a>
+              
+              <div class="more-entries">
+                {project.posts.slice(1).map(post => (
+                  <a href={`/blog/${post.slug}/`} class="entry-item">
+                    <div class="entry-content">
+                      <span class="entry-title">{post.data.title}</span>
+                      <time class="entry-date">
+                        {post.data.pubDate.toLocaleDateString(undefined, {
+                          month: 'short',
+                          day: 'numeric'
+                        })}
+                      </time>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </article>
+        ))}
+        
+        {recentProjects.slice(1).map((project, index) => (
+          <article class="project-blog-card hidden-blog-item" data-project={project.name} style="display: none;">
+            <div class="topic-header" data-project-index={index + 1}>
+              <div class="topic-info">
+                <div class="topic-title">{project.displayName}</div>
+                <div class="topic-description">{project.description}</div>
+                <div class="topic-meta">{project.totalPosts} entries</div>
+              </div>
+              <button class="collapse-btn expanded" aria-label="Collapse entries">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </button>
+            </div>
+            
+            <div class="blog-entries">
+              <a href={`/blog/${project.latestPost.slug}/`} class="entry-item featured-entry">
+                <div class="entry-content">
+                  <h4 class="entry-title">{project.latestPost.data.title}</h4>
+                  <time class="entry-date">
+                    {project.latestPost.data.pubDate.toLocaleDateString(undefined, {
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric'
+                    })}
+                  </time>
+                </div>
+                <div class="entry-badge">Latest</div>
+              </a>
+              
+              <div class="more-entries">
+                {project.posts.slice(1).map(post => (
+                  <a href={`/blog/${post.slug}/`} class="entry-item">
+                    <div class="entry-content">
+                      <span class="entry-title">{post.data.title}</span>
+                      <time class="entry-date">
+                        {post.data.pubDate.toLocaleDateString(undefined, {
+                          month: 'short',
+                          day: 'numeric'
+                        })}
+                      </time>
+                    </div>
+                  </a>
+                ))}
+              </div>
             </div>
           </article>
         ))}
       </div>
 
       <div style="text-align: center; margin-top: 2rem;">
-        <a href="#blog" class="btn">
-          View All Posts
-        </a>
+        <button class="btn" id="view-all-blog-btn">
+          View All Topics
+        </button>
       </div>
+
     </section>
 
     <section id="videos">
-      <h2>Videos</h2>
-      <p>
+      <h2 style="padding-left: 2rem;">Videos</h2>
+      <p style="padding-left: 2rem;">
         Watch me build projects and teach technologies step by step through comprehensive tutorials.
       </p>
 
-      <div class="videos-grid">
-        {featuredVideos.map(video => (
-          <article class="video-card">
+      <div class="videos-grid" id="videos-grid">
+        {featuredVideos.slice(0, 2).map(video => (
+          <article class="video-card initial-video">
             <div class="video-thumbnail">
               <img src={video.thumbnail} alt={video.title} />
               <div class="play-overlay">
@@ -251,13 +326,108 @@ const featuredProjects = allProjects.filter(project => project.data.featured);
             </div>
           </article>
         ))}
+        
+        {featuredVideos.slice(2).map(video => (
+          <article class="video-card hidden-video" style="display: none;">
+            <div class="video-thumbnail">
+              <img src={video.thumbnail} alt={video.title} />
+              <div class="play-overlay">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+              </div>
+              <span class="video-duration">{video.duration}</span>
+            </div>
+            
+            <div class="video-content">
+              <div class="video-header">
+                <h3>Tutorial</h3>
+                <span class="video-badge">YouTube</span>
+              </div>
+              
+              <a href={video.url} target="_blank" rel="noopener noreferrer">
+                <h4>{video.title}</h4>
+                <p class="video-description">{video.description}</p>
+                
+                <div class="video-meta">
+                  <time>
+                    {video.publishedAt.toLocaleDateString(undefined, {
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric'
+                    })}
+                  </time>
+                  <div class="video-tags">
+                    {video.tags.map(tag => (
+                      <span class="video-tag">{tag}</span>
+                    ))}
+                  </div>
+                </div>
+              </a>
+            </div>
+          </article>
+        ))}
+        
+        <!-- Placeholder video cards -->
+        <article class="video-card placeholder-video hidden-video" style="display: none;">
+          <div class="video-thumbnail placeholder-video-thumb">
+            <div class="placeholder-video-content">📹</div>
+            <span class="video-duration">--:--</span>
+          </div>
+          
+          <div class="video-content">
+            <div class="video-header">
+              <h3>Coming Soon</h3>
+              <span class="video-badge">YouTube</span>
+            </div>
+            
+            <div class="video-info">
+              <h4>New Tutorial Series</h4>
+              <p class="video-description">Exciting new content coming soon to help you level up your development skills.</p>
+              
+              <div class="video-meta">
+                <time>Coming Soon</time>
+                <div class="video-tags">
+                  <span class="video-tag">Tutorial</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+        
+        <article class="video-card placeholder-video hidden-video" style="display: none;">
+          <div class="video-thumbnail placeholder-video-thumb">
+            <div class="placeholder-video-content">🎬</div>
+            <span class="video-duration">--:--</span>
+          </div>
+          
+          <div class="video-content">
+            <div class="video-header">
+              <h3>Workshop</h3>
+              <span class="video-badge">YouTube</span>
+            </div>
+            
+            <div class="video-info">
+              <h4>Live Coding Sessions</h4>
+              <p class="video-description">Interactive coding workshops and live development sessions with Q&A.</p>
+              
+              <div class="video-meta">
+                <time>Coming Soon</time>
+                <div class="video-tags">
+                  <span class="video-tag">Live</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
       </div>
 
       <div style="text-align: center; margin-top: 2rem;">
-        <a href="#videos" class="btn">
+        <button class="btn" id="view-all-videos-btn">
           View All Videos
-        </a>
+        </button>
       </div>
+
     </section>
   </div>
 </BaseLayout>
@@ -328,16 +498,15 @@ const featuredProjects = allProjects.filter(project => project.data.featured);
   
   /* Project cards styling */
   .gallery-grid {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 2rem !important;
-    width: 100% !important;
-    max-width: 900px !important;
-    margin: 0 auto !important;
+    display: flex !important;
     justify-content: space-between !important;
+    width: calc(100% - 4rem) !important;
+    margin: 0 2rem 0 2rem !important;
   }
-  
+
   .gallery-item {
+    width: 480px !important;
+    flex-shrink: 0 !important;
     background: rgba(255,255,255, 0.25) !important;
     backdrop-filter: blur(15px) saturate(180%) !important;
     -webkit-backdrop-filter: blur(15px) saturate(180%) !important;
@@ -407,7 +576,7 @@ const featuredProjects = allProjects.filter(project => project.data.featured);
   /* Semi-transparent overlays for sections */
   #projects {
     background: rgba(255, 255, 255, 0.85) !important;
-    padding: 3rem 2rem !important;
+    padding: 2rem !important;
     border-radius: 16px !important;
     backdrop-filter: blur(10px) !important;
     margin: 2rem 0 !important;
@@ -415,7 +584,7 @@ const featuredProjects = allProjects.filter(project => project.data.featured);
   
   section:not(#projects) {
     background: rgba(255, 255, 255, 0.85) !important;
-    padding: 3rem 2rem !important;
+    padding: 2rem !important;
     border-radius: 16px !important;
     backdrop-filter: blur(10px) !important;
     margin: 2rem 0 !important;
@@ -426,7 +595,8 @@ const featuredProjects = allProjects.filter(project => project.data.featured);
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    margin: 2rem 0;
+    margin: 2rem 2rem 2rem 2rem;
+    width: calc(100% - 4rem);
   }
   
   /* Videos grid styling */
@@ -434,7 +604,8 @@ const featuredProjects = allProjects.filter(project => project.data.featured);
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 2rem;
-    margin: 2rem 0;
+    margin: 2rem 2rem 2rem 2rem;
+    width: calc(100% - 4rem);
   }
   
   .project-blog-card {
@@ -703,30 +874,274 @@ const featuredProjects = allProjects.filter(project => project.data.featured);
     border-radius: 12px !important;
     font-weight: 500;
   }
+  
+  /* Placeholder video card styling */
+  .placeholder-video {
+    opacity: 0.8 !important;
+  }
+  
+  .placeholder-video:hover {
+    opacity: 0.9 !important;
+  }
+  
+  .placeholder-video-thumb {
+    background: linear-gradient(135deg, #f3f4f6, #e5e7eb) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: relative;
+  }
+  
+  .placeholder-video-content {
+    font-size: 3rem !important;
+    color: #9ca3af !important;
+    font-weight: 300 !important;
+  }
+  
+  .placeholder-video .video-info {
+    pointer-events: none;
+  }
+  
+  /* New Blog Card Styling */
+  .topic-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    background: rgba(107, 114, 128, 0.05);
+    border-left: 3px solid #6b7280;
+  }
+  
+  .topic-header[data-project-index="0"] {
+    background: rgba(59, 130, 246, 0.05);
+    border-left-color: #3b82f6;
+  }
+  
+  .topic-header[data-project-index="1"] {
+    background: rgba(16, 185, 129, 0.05);
+    border-left-color: #10b981;
+  }
+  
+  .topic-header[data-project-index="2"] {
+    background: rgba(245, 158, 11, 0.05);
+    border-left-color: #f59e0b;
+  }
+  
+  .topic-info {
+    flex: 1;
+  }
+  
+  .topic-title {
+    font-size: 0.9rem !important;
+    font-weight: 500 !important;
+    color: #6b7280 !important;
+    margin: 0 0 0.25rem 0 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  .topic-description {
+    margin: 0 0 0.25rem 0 !important;
+    color: #9ca3af !important;
+    font-size: 0.8rem !important;
+    font-style: italic;
+  }
+  
+  .topic-meta {
+    color: #9ca3af !important;
+    font-size: 0.75rem !important;
+    font-weight: 500;
+  }
+  
+  .collapse-btn {
+    background: none;
+    border: none;
+    color: #9ca3af;
+    cursor: pointer;
+    padding: 0.25rem;
+    transition: all 0.2s ease;
+    border-radius: 4px;
+  }
+  
+  .collapse-btn:hover {
+    color: #6b7280;
+    background: rgba(107, 114, 128, 0.1);
+  }
+  
+  .collapse-btn svg {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.2s ease;
+  }
+  
+  .collapse-btn.expanded svg {
+    transform: rotate(180deg);
+  }
+  
+  .blog-entries {
+    margin-top: 0.5rem;
+  }
+  
+  .entry-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    text-decoration: none;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    transition: all 0.2s ease;
+    background: rgba(255, 255, 255, 0.5);
+  }
+  
+  .entry-item:hover {
+    background: rgba(16, 185, 129, 0.05);
+    border-color: rgba(16, 185, 129, 0.2);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .featured-entry {
+    border-color: rgba(16, 185, 129, 0.3);
+    background: rgba(16, 185, 129, 0.02);
+  }
+  
+  .entry-content {
+    flex: 1;
+  }
+  
+  .entry-title {
+    color: #1a202c !important;
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    margin: 0 0 0.25rem 0 !important;
+    line-height: 1.4;
+  }
+  
+  .entry-date {
+    color: #6b7280 !important;
+    font-size: 0.8rem !important;
+    font-weight: 500;
+  }
+  
+  .entry-badge {
+    background: #10b981;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  .more-entries .entry-item {
+    margin-bottom: 0.25rem;
+    padding: 0.5rem 1rem;
+  }
+  
+  .more-entries .entry-title {
+    font-size: 0.9rem !important;
+    font-weight: 500 !important;
+  }
 </style>
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    const expandBtns = document.querySelectorAll('.expand-btn');
+    const collapseBtns = document.querySelectorAll('.collapse-btn');
     
-    expandBtns.forEach(btn => {
+    collapseBtns.forEach(btn => {
       btn.addEventListener('click', function() {
         const card = this.closest('.project-blog-card');
-        const postList = card.querySelector('.post-list');
+        const entries = card.querySelector('.more-entries');
         const isExpanded = this.classList.contains('expanded');
         
         if (isExpanded) {
-          // Collapse
-          postList.style.display = 'none';
+          // Collapse - hide additional entries
+          entries.style.display = 'none';
           this.classList.remove('expanded');
-          this.setAttribute('aria-label', 'Expand project');
+          this.setAttribute('aria-label', 'Expand entries');
         } else {
-          // Expand
-          postList.style.display = 'block';
+          // Expand - show additional entries
+          entries.style.display = 'block';
           this.classList.add('expanded');
-          this.setAttribute('aria-label', 'Collapse project');
+          this.setAttribute('aria-label', 'Collapse entries');
         }
       });
     });
+
+    // View All Projects functionality
+    const viewAllProjectsBtn = document.getElementById('view-all-projects-btn');
+    if (viewAllProjectsBtn) {
+      viewAllProjectsBtn.addEventListener('click', function() {
+        const projectsGrid = document.getElementById('projects-grid');
+        const hiddenItems = projectsGrid.querySelectorAll('.hidden-item');
+        const isExpanded = this.textContent.includes('Show Less');
+        
+        if (isExpanded) {
+          // Collapse - hide additional items
+          hiddenItems.forEach(item => {
+            item.style.display = 'none';
+          });
+          this.textContent = 'View All Projects';
+        } else {
+          // Expand - show all items
+          hiddenItems.forEach(item => {
+            item.style.display = 'block';
+          });
+          this.textContent = 'Show Less Projects';
+        }
+      });
+    }
+
+    // View All Blog Topics functionality
+    const viewAllBlogBtn = document.getElementById('view-all-blog-btn');
+    if (viewAllBlogBtn) {
+      viewAllBlogBtn.addEventListener('click', function() {
+        const blogGrid = document.getElementById('blog-grid');
+        const hiddenItems = blogGrid.querySelectorAll('.hidden-blog-item');
+        const isExpanded = this.textContent.includes('Show Less');
+        
+        if (isExpanded) {
+          // Collapse - hide additional topics
+          hiddenItems.forEach(item => {
+            item.style.display = 'none';
+          });
+          this.textContent = 'View All Topics';
+        } else {
+          // Expand - show all topics
+          hiddenItems.forEach(item => {
+            item.style.display = 'block';
+          });
+          this.textContent = 'Show Less Topics';
+        }
+      });
+    }
+
+    // View All Videos functionality
+    const viewAllVideosBtn = document.getElementById('view-all-videos-btn');
+    if (viewAllVideosBtn) {
+      viewAllVideosBtn.addEventListener('click', function() {
+        const videosGrid = document.getElementById('videos-grid');
+        const hiddenVideos = videosGrid.querySelectorAll('.hidden-video');
+        const isExpanded = this.textContent.includes('Show Less');
+        
+        if (isExpanded) {
+          // Collapse - hide additional videos
+          hiddenVideos.forEach(item => {
+            item.style.display = 'none';
+          });
+          this.textContent = 'View All Videos';
+        } else {
+          // Expand - show all videos
+          hiddenVideos.forEach(item => {
+            item.style.display = 'block';
+          });
+          this.textContent = 'Show Less Videos';
+        }
+      });
+    }
   });
 </script>
