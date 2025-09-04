@@ -123,6 +123,19 @@ const featuredProjects = allProjects.filter(project => project.data.featured);
             </div>
           </div>
         </div>
+        
+        <div class="gallery-item placeholder-card">
+          <div class="gallery-image placeholder-image">
+            <div class="placeholder-content">⚡</div>
+          </div>
+          <div class="gallery-content">
+            <h3>Innovation Lab</h3>
+            <p>Experimental projects and cutting-edge technologies.</p>
+            <div class="tech-stack">
+              <span class="tech-tag">Research</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div style="text-align: center; margin-top: 2rem;">
@@ -132,22 +145,22 @@ const featuredProjects = allProjects.filter(project => project.data.featured);
       </div>
     </section>
 
-    <section>
+    <section id="blog">
       <h2>Blog</h2>
       <p>
         Follow my journey building projects and learning new technologies through daily logs.
       </p>
 
       <div class="blog-projects-grid">
-        {recentProjects.map(project => (
+        {recentProjects.map((project, index) => (
           <article class="project-blog-card" data-project={project.name}>
-            <div class="project-header">
+            <div class="project-banner" data-project-index={index}>
               <div class="project-info">
                 <h3>{project.displayName}</h3>
                 <p class="project-description">{project.description}</p>
                 <span class="post-count">{project.totalPosts} entries</span>
               </div>
-              <button class="expand-btn" aria-label="Expand project">
+              <button class="expand-btn expanded" aria-label="Collapse project">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                 </svg>
@@ -167,7 +180,7 @@ const featuredProjects = allProjects.filter(project => project.data.featured);
               </a>
             </div>
             
-            <div class="post-list" style="display: none;">
+            <div class="post-list">
               {project.posts.slice(1).map(post => (
                 <a href={`/blog/${post.slug}/`} class="post-item">
                   <span class="post-title">{post.data.title}</span>
@@ -185,13 +198,13 @@ const featuredProjects = allProjects.filter(project => project.data.featured);
       </div>
 
       <div style="text-align: center; margin-top: 2rem;">
-        <a href="/blog" class="btn">
-          View All Projects
+        <a href="#blog" class="btn">
+          View All Posts
         </a>
       </div>
     </section>
 
-    <section>
+    <section id="videos">
       <h2>Videos</h2>
       <p>
         Watch me build projects and teach technologies step by step through comprehensive tutorials.
@@ -241,7 +254,7 @@ const featuredProjects = allProjects.filter(project => project.data.featured);
       </div>
 
       <div style="text-align: center; margin-top: 2rem;">
-        <a href="/videos" class="btn">
+        <a href="#videos" class="btn">
           View All Videos
         </a>
       </div>
@@ -252,6 +265,15 @@ const featuredProjects = allProjects.filter(project => project.data.featured);
 <style>
   body {
     background: url('/images/hero-bg-2.png') center/cover no-repeat fixed;
+  }
+  
+  /* Fix scroll offset for fixed header */
+  html {
+    scroll-padding-top: 60px;
+  }
+  
+  section[id] {
+    scroll-margin-top: 60px;
   }
   
   #projects h2 {
@@ -307,19 +329,21 @@ const featuredProjects = allProjects.filter(project => project.data.featured);
   /* Project cards styling */
   .gallery-grid {
     display: grid !important;
-    grid-template-columns: repeat(3, 1fr) !important;
+    grid-template-columns: repeat(2, 1fr) !important;
     gap: 2rem !important;
     width: 100% !important;
-    max-width: 1000px !important;
+    max-width: 900px !important;
     margin: 0 auto !important;
     justify-content: space-between !important;
   }
   
   .gallery-item {
-    background: rgba(255, 255, 255, 0.9) !important;
-    border: 1px solid rgba(0, 0, 0, 0.1) !important;
-    border-radius: 12px !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+    background: rgba(255,255,255, 0.25) !important;
+    backdrop-filter: blur(15px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(15px) saturate(180%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12) !important;
   }
   
   .gallery-item:hover {
@@ -329,11 +353,13 @@ const featuredProjects = allProjects.filter(project => project.data.featured);
   }
   
   .gallery-image {
-    height: 140px !important;
+    height: 250px !important;
+    border-radius: 12px 12px 0 0 !important;
+    overflow: hidden !important;
   }
   
   .gallery-content {
-    padding: 1.25rem !important;
+    padding: 1rem 1.5rem 1.5rem 1.5rem !important;
   }
   
   /* Tech tags styling */
@@ -472,6 +498,11 @@ const featuredProjects = allProjects.filter(project => project.data.featured);
   
   .expand-btn.expanded svg {
     transform: rotate(180deg);
+  }
+  
+  /* Show post list by default */
+  .post-list {
+    display: block !important;
   }
   
   .latest-post a {
@@ -688,10 +719,12 @@ const featuredProjects = allProjects.filter(project => project.data.featured);
           // Collapse
           postList.style.display = 'none';
           this.classList.remove('expanded');
+          this.setAttribute('aria-label', 'Expand project');
         } else {
           // Expand
           postList.style.display = 'block';
           this.classList.add('expanded');
+          this.setAttribute('aria-label', 'Collapse project');
         }
       });
     });

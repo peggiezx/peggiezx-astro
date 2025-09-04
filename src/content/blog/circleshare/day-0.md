@@ -1,104 +1,49 @@
 ---
-title: "Day 0: The Problem I'm Solving & Why I'm Building This"
-pubDate: 2025-06-01
+title: "Day 0: What I'm building & Why I'm Building This"
+pubDate: 2025-05-31
 tags: ["FastAPI", "Private-social", "CircleShare"]
 ---
 
-We all have our **inner circle** - the people who truly matter in our lives. For me, that includes four parents (biological and step-parents), close cousins, and a few friends who feel like family. But here's the challenge: **I don't want to share the same life update multiple times across different relationships.**
+I’ve decided to build an app called **CircleShare**. 
 
-More importantly, not everyone in my inner circle needs to see each other's interactions. My divorced in-laws shouldn't have to encounter each other's comments. My work friends don't need to see my family drama. My college friends might not vibe with my childhood friends.
+Think of it as a private social journal where you share life updates with your inner circle. That means family *and* close friends: the people you actually want to stay connected with, not the hundreds of acquaintances you barely talk to.  
 
-**Existing solutions don't work:**
-- **Facebook/Instagram**: Too public, too noisy, algorithm chaos, everyone sees everything
-- **Group chats**: Messy, forces uncomfortable mixing of different relationship circles
-- **Individual calls/texts**: Exhausting to repeat the same story multiple times
-- **Existing apps**: Either shut down (RIP Cocoon), too focused on kids (Notabli), or missing the complex relationship dynamics piece
+I’m writing these posts partly to track my own progress, and partly because when I was starting out, I wished there were more “build in public” stories that showed the messy parts. If you’ve ever stared at documentation wondering, **“where the heck do I even start?”**, I want these posts to feel like a guide you can build alongside.  
 
-## What I Want to Build
+I’ve been there. Feeling like everyone already knows what an API is, while you’re Googling “what’s the difference between GET and POST?” Fighting off that voice that says *maybe you’re not cut out for this*.  
 
-**A private circle journal app** where:
-- I can share life updates **once** with my selected inner circle
-- Circle members can comment and react, but with **smart privacy controls**
-- Different relationships see my posts but **not each other's interactions** (unless I choose otherwise)
-- It's **intimate and meaningful** - major life moments, not daily noise
-- Each person can have their **own journal** too, creating a network of close-knit life sharing
-- **Flexible circles**: Family, chosen family, college friends, work friends - whatever matters to you
+So here’s my deal: I’ll build CircleShare step by step, share the stumbles as much as the wins, and hopefully show that learning to code is less about being perfect and more about keeping at it.  
 
-**Think of it as:** "Private Instagram meets personal journaling, designed for your most important relationships"
 
-I'm going to call it **CircleShare** for now.
+## What Is CircleShare?  
 
-## Why This Matters to Me
+We all have our **inner circle**: parents, siblings, cousins, best friends, or even chosen family, the people we’d update no matter what.  
 
-**Universal Need**: This isn't just about family - it's about maintaining meaningful connections with your inner circle without the chaos of public social media or the exhaustion of individual updates.
+Right now, that’s hard to do. I’m juggling WeChat for my parents, Line for my in-laws, Instagram for a couple of friends, and texts for those who don’t use social media. Every life update feels like three or four repeats.  
 
-**Real-World Complexity**: Modern relationships are nuanced. Your college roommate doesn't need to see your family dynamics. Your parents don't need to see your work friends' party comments. We naturally compartmentalize relationships - why shouldn't our sharing apps?
+And here’s the thing: I’m not into traditional social media. Posting on Instagram feels like broadcasting, like I have to stage a moment big enough to announce. The feeds, the algorithms, the endless scrolling, none of it feels peaceful.  
 
-**Chosen Family Recognition**: Many people's closest bonds aren't biological family. LGBTQ+ communities, military friendships, immigrant communities, people estranged from family - everyone deserves a tool for intimate sharing with their chosen circle.
+**What I want instead:**  
+- One quiet timeline where I post once, and my circle can all see it — no matter what platform they normally use.  
+- A place where updates feel natural, not performative.  
+- Something that feels like a **journal**, but shared: I write my milestones, they can comment and react, and together we build a small timeline of life.  
 
-## My Technical Journey Plan
+**CircleShare is my solution:**  
+- Share life moments **once**, privately, like keeping a journal.  
+- Everyone can **comment** and **like**, like social media features, but only the people you invited.  
+- No feeds, no noise, no algorithms.  
+- A record of your life you can look back on, and your friends/family can do the same.  
 
-**Background**: I have about 6 months of web development experience. I can read and understand code pretty well, but writing from scratch is still challenging. My goal is to become a competent full-stack developer in 6 months.
+It’s not about replacing social media. It’s about offering an alternative for those of us who want to stay close without the noise, or the feeling that we’re performing online.  
 
-### **Phase 1: Backend Foundation (Month 1)**
-- **FastAPI & Database Design** - Building a secure, scalable API
-- **Authentication & Security** - JWT tokens, password hashing, protected routes
-- **Circle Relationship Modeling** - Complex privacy controls between different relationship types
-- **Core Journal Features** - Creating, sharing, and commenting on life updates
+On the tech side, CircleShare will be a full-stack project: 
+- **FastAPI** for the backend
+- **React** for the frontend 
+- **Docker** for deployment
+- full features, including user authentication, file uploads, notifications, and a timeline-based interface. 
 
-### **Phase 2: Frontend Development (Month 2-3)**  
-- **React Application** - Modern, responsive user interface
-- **API Integration** - Connecting frontend to the backend I built
-- **Circle Network Visualization** - Intuitive way to see who has journals and who can see what
-- **Mobile-First Design** - Most intimate sharing happens on phones
+For me, this is a way to learn everything from APIs to Frontend to deployment, while creating something useful for my own life.  
 
-### **Phase 3: Advanced Features (Month 4-5)**
-- **Photo Upload & Storage** - Life updates need pictures
-- **Real-time Notifications** - Know when your circle comments on your posts
-- **Progressive Web App** - Mobile app experience through web technology
-- **Advanced Privacy Controls** - Granular control over who sees what across different circles
+Will it fix social media overwhelm for everyone? Probably not. 
 
-### **Phase 4: Production & Polish (Month 6)**
-- **Deployment Pipeline** - Making it available for real circles to use
-- **Performance Optimization** - Fast, reliable experience
-- **User Testing** - Getting feedback from different types of inner circles
-- **Documentation** - Code documentation and user guides
-
-## What You'll See in This Blog Series
-
-**Technical Learning**: Each day, I'll document what I learned, what I built, and what challenges I overcame. This isn't about perfect code - it's about real learning, including the mistakes and debugging sessions.
-
-**Problem-Solving Process**: How I approach new concepts, research solutions, and implement features. The messy, iterative process of turning ideas into working code.
-
-**Architecture Decisions**: Why I chose certain technologies, how I structure my code, and how I think about building scalable applications for complex relationship dynamics.
-
-**Real Development Challenges**: Import errors, database migrations, authentication bugs, deployment issues - the stuff that tutorials don't always cover.
-
-## Success Metrics
-
-**Technical Goals:**
-- Build a complete full-stack application from scratch
-- Deploy it to production where real circles can actually use it
-- Demonstrate professional development practices (testing, documentation, security)
-
-**Learning Goals:**  
-- Go from "can read code" to "can build complete applications independently"
-- Understand how all the pieces fit together (database → API → frontend → deployment)
-- Build confidence in tackling any web development challenge
-
-**Personal Goals:**
-- Solve the intimate circle communication problem for myself and others
-- Have something meaningful to show in my developer portfolio
-- Prove to myself that I can build real software that people use
-
-## The Learning Approach
-
-**Building in Public**: Documenting everything, including failures and false starts. Real learning is messy, and I want to show that process honestly.
-
-**User-First**: Every feature I build should solve a real need for intimate circle sharing, not just be technically interesting. This keeps me focused on building something useful.
-
-**Incremental Progress**: Small wins every day rather than trying to build everything at once. Celebrate the milestones and learn from the setbacks.
-
----
-
-*This is Day 0 of my learning journal documenting the development of a private circle journal application and my journey to become a full-stack developer.*
+But if it helps me and my people share life updates in a calmer way, that’s already a win. And along the way, I’ll be leveling up as a developer.  

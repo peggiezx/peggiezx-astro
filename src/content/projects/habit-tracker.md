@@ -5,7 +5,7 @@ image: "../../assets/projects/habit-tracker.png"
 stack: ["Swift", "iOS", "SwiftUI", "Core Data"]
 github: "https://github.com/peggiezx/tiny-streak"
 demo: "https://apps.apple.com/app/tiny-streak/id123456789"
-featured: true
+featured: false
 ---
 
 # Tiny-Streak Habit Tracker

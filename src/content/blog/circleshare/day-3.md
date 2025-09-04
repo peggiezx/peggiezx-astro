@@ -1,115 +1,94 @@
 ---
 title: "Day 3: JWT Authentication & Protected Routes"
 pubDate: 2025-06-03
-tags: ["FastAPI", "Private-social", "CircleShare", "JWT", "Authentication", "Authorization","fastapi.security"]
+tags: ["FastAPI", "Private-social", "CircleShare", "JWT", "Authentication", "Authorization"]
 ---
 
-## Today's Mission: JWT Authentication & Protected Routes
+Yesterday, I wired up my first database. CircleShare could finally *remember* who its users were. But then it hit me... right now, **anyone** can call `/users` and see everyone’s info.  
 
-After successfully building a FastAPI backend with user registration and database integration, today's challenge was implementing a complete authentication system. This involved JWT tokens, password verification, and protected routes - essentially building the security layer that keeps family data safe.
+That’s not great for a private app meant to hold personal updates.  
 
-## What I Built
+Time to add **security basics**.  
 
-### 🔐 **Complete JWT Authentication System**
-- **Token Generation**: Created secure JWT tokens upon successful login
-- **Token Validation**: Built middleware to verify tokens on protected routes  
-- **Password Security**: Implemented Argon2 hashing for bulletproof password storage
-- **Protected Endpoints**: Family-only routes that require valid authentication
 
-### 🛠 **Technical Implementation**
+## Authentication vs Authorization  
 
-**Authentication Flow:**
-1. User logs in with email/password
-2. API verifies credentials against hashed passwords in database
-3. If valid, generates JWT token with user info and expiration
-4. User sends token with subsequent requests to protected routes
-5. API validates token and extracts user information
+These are the two concepts that people casually use interchangeably. However, if you know their meaning, they should never be mixed up. They serve very distinct purposes:  
+- **Authentication (AuthN)** answers the question:
+ *“Are you who you say you are?”*  
+  → Think of showing your ID at the door.  
 
-**Key Technologies:**
-- **python-jose**: JWT token creation and validation
-- **passlib with Argon2**: Modern password hashing
-- **FastAPI Dependencies**: Clean dependency injection for authentication
-- **HTTPBearer**: Professional token-based authentication
+- **Authorization (AuthZ)** answers the question: *“Now that I know who you are, what are you allowed to do?”*  
+  → Think of the bouncer checking if you’re on the VIP list.  
 
-### 🧩 **Code Architecture**
+For CircleShare:  
+- Authentication = logging in with your email/password and getting back a token that proves it’s you.  
+- Authorization = using that token to access only the routes you’re allowed (like your profile, your circle’s timeline, not someone else’s).  
 
-**Separation of Concerns:**
+
+## How I Solved It  
+
+### Step 1: Hash Passwords  
+I switched from storing plain passwords to **hashed** ones (Argon2). Plain passwords are like writing your ATM PIN on a sticky note. Hashing makes it unreadable gibberish.  
+
+### Step 2: JWT Tokens for Authentication  
+When you log in, the API checks your password and then issues a **JWT (JSON Web Token)**.  
+
+A JWT is like a digital boarding pass: it says *“this person is who they claim to be”* and has an expiration time. You send it back with every request as proof.  
+
+Minimal example:  
+
 ```python
-# auth.py - Authentication logic
-def create_access_token(data: dict, expires_delta: timedelta)
-def verify_password(plain_password: str, hashed_password: str)  
-async def get_current_user(credentials: HTTPAuthorizationCredentials)
+@app.post("/login")
+def login(user_credentials: UserLogin, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.email == user_credentials.email).first()
+    if not user or not verify_password(user_credentials.password, user.hashed_password):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
 
-# main.py - API endpoints
-@app.post("/login", response_model=Token)
-@app.get("/profile", dependencies=[Depends(get_current_user)])
+    token = create_access_token(data={"sub": user.email})
+    return {"access_token": token, "token_type": "bearer"}
 ```
 
-**Clean dependency injection** for protected routes using FastAPI's `Depends()` system.
+### Step 3: Protected Routes for Authorization  
+Once you have a token, you can access protected routes. Without it? You get `401 Unauthorized`.  
 
-## Challenges Overcome
+Example:  
 
-### 🐛 **Password Hash Compatibility**
-**Problem**: `passlib.exc.UnknownHashError` when trying to verify passwords  
-**Root Cause**: Database contained old password hashes incompatible with current Argon2 setup  
-**Solution**: Started fresh with clean database and consistent hashing scheme  
-**Learning**: Importance of schema migrations and hash compatibility in production systems
-
-### 🔧 **Authentication UI Design Choice**  
-**Problem**: OAuth2PasswordBearer created username/password form instead of simple token field  
-**Decision**: Switched to HTTPBearer for cleaner token-based authentication  
-**Result**: More professional API design and easier frontend integration  
-**Learning**: Understanding different OAuth2 flows and choosing the right approach
-
-### ⚠️ **Modern Python Deprecations**
-**Issue**: `datetime.utcnow()` deprecated in Python 3.13  
-**Solution**: Updated to `datetime.now(timezone.utc)` for timezone-aware timestamps  
-**Learning**: Staying current with Python best practices and explicit timezone handling
-
-## Key Insights
-
-### 🎯 **Authentication vs Authorization**
-Solidified understanding of the critical distinction:
-- **Authentication**: "Who are you?" (Login verification)  
-- **Authorization**: "What can you access?" (Permission checking)
-
-### 🔒 **Security First Mindset**
-- Never store plain text passwords
-- Use secure, modern hashing algorithms (Argon2 > bcrypt)
-- Implement proper token expiration (20 minutes for this project)
-- Validate tokens on server-side for every protected request
-
-### 🏗 **Dependency Injection Power**
-FastAPI's `Depends()` system creates clean, reusable authentication:
 ```python
-# Automatic authentication for any endpoint
-async def protected_endpoint(current_user: User = Depends(get_current_user)):
-    # Function only runs if user is authenticated
-    # current_user object automatically available
+@app.get("/profile")
+def get_profile(current_user: User = Depends(get_current_user)):
+    return current_user
 ```
 
-## Portfolio Metrics
+That one `Depends(get_current_user)` does all the heavy lifting:  
+- Reads the token from the header  
+- Validates it  
+- Loads the user from the database  
+- Passes it into your function  
 
-**Lines of Code**: ~150 lines of authentication logic  
-**Endpoints Created**: 4 (register, login, profile, family-members)  
-**Security Features**: JWT tokens, password hashing, protected routes  
-**Testing Method**: FastAPI interactive docs with manual token verification
+Magic.  
 
-## Tomorrow's Focus
+## Seeing It in Action  
 
-**Backend Polishing Session**: Input validation and professional error handling
-- Pydantic field validation for robust data quality
-- HTTP status codes and user-friendly error messages  
-- Additional family-focused endpoints
+1. Register a new user → `POST /register`  
+2. Log in → `POST /login` → get back a JWT  
+3. Click “Authorize” in the FastAPI docs, paste in your token  
+4. Now you can call `/profile` or `/users` successfully  
+5. Without a token? You’re locked out  
 
-## Reflection
+That was the first time CircleShare *felt* secure.  
 
-Building authentication from scratch gave me deep appreciation for security complexity. Every login system I use daily involves these same patterns - token generation, validation, protected resources. 
 
-**Confidence Level**: Jumped from 4/10 to 7/10 in building secure APIs. Successfully debugging the hash compatibility issue and choosing the right OAuth2 approach felt like real developer problem-solving.
+## Learning Resources  
 
-**Next Milestone**: Once backend validation is solid, I'll connect a React frontend to this API and see the complete authentication flow in action.
+If you want to dive deeper into JWTs and FastAPI security:  
 
----
+- [FastAPI Security Tutorial](https://fastapi.tiangolo.com/tutorial/security/)  
+- [JWT.io Debugger](https://jwt.io) → paste in a token and see what’s inside  
+- [RealPython: JWT Authentication with FastAPI](https://realpython.com/token-based-authentication-with-fastapi/)  
+## Full Code  
 
-*This learning journal is part of my 6-month journey to become a full-stack developer, building a private family journal application from scratch.*
+I skipped a lot of the plumbing code in this post to keep it focused. If you want to see my full working implementation (with password hashing, token creation, and protected routes), check out my GitHub repo here:  
+
+👉 **[CircleShare on GitHub](https://github.com/yourusername/circleshare)**  
+

@@ -4,7 +4,7 @@ description: "Sandboxed CLI that teaches safe merge-conflict resolution with han
 image: "../../assets/projects/git-trainer.png"
 stack: ["Go", "CLI", "Git", "Docker"]
 github: "https://github.com/peggiezx/git-conflict-trainer"
-featured: true
+featured: false
 ---
 
 # Git Conflict Trainer CLI
