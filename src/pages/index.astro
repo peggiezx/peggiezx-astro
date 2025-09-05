@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
 import yelpCampImage from '../assets/projects/yelpcamp.png';
 
 // Get blog posts organized by project
@@ -89,7 +90,11 @@ const projectImages = {
         <div class="gallery-item initial-item">
           <a href={`/projects/${project.slug}/`} class="gallery-link">
             <div class="gallery-image">
-              {projectImages[project.slug] && <img src={projectImages[project.slug]} alt={project.data.title} />}
+              {project.slug === 'yelpcamp' ? (
+                <Image src={yelpCampImage} alt={project.data.title} />
+              ) : (
+                projectImages[project.slug] && <img src={projectImages[project.slug]} alt={project.data.title} />
+              )}
             </div>
             <div class="gallery-content">
               <h3>{project.data.title}</h3>
@@ -110,7 +115,11 @@ const projectImages = {
         <div class="gallery-item hidden-item" style="display: none;">
           <a href={`/projects/${project.slug}/`} class="gallery-link">
             <div class="gallery-image">
-              {projectImages[project.slug] && <img src={projectImages[project.slug]} alt={project.data.title} />}
+              {project.slug === 'yelpcamp' ? (
+                <Image src={yelpCampImage} alt={project.data.title} />
+              ) : (
+                projectImages[project.slug] && <img src={projectImages[project.slug]} alt={project.data.title} />
+              )}
             </div>
             <div class="gallery-content">
               <h3>{project.data.title}</h3>
