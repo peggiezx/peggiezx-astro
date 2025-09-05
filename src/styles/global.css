@@ -22,26 +22,7 @@
   --info: #0bc5ea;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #1a202c;
-    --fg: #f7fafc;
-    --accent: #63b3ed;
-    --accent-hover: #4299e1;
-    --accent-light: #2d3748;
-    --text-secondary: #cbd5e0;
-    --text-muted: #a0aec0;
-    --code-bg: #2d3748;
-    --border: #4a5568;
-    --border-light: #718096;
-    --card-bg: #2d3748;
-    --shadow: rgba(99, 179, 237, 0.15);
-    --shadow-hover: rgba(99, 179, 237, 0.25);
-    --success: #68d391;
-    --warning: #f6ad55;
-    --info: #4fd1c7;
-  }
-}
+/* Removed dark theme media query to force light theme */
 
 /* Reset and base styles */
 * {
@@ -314,6 +295,21 @@ section {
 .content {
   line-height: 1.8;
   color: #333;
+}
+
+/* Project detail page images - force smaller size */
+.project-detail-page img,
+.project-content img,
+img[alt="YelpCamp Homepage"] {
+  max-width: 500px !important;
+  width: auto !important;
+  height: auto !important;
+  max-height: 300px !important;
+  object-fit: contain !important;
+  display: block !important;
+  margin: 1.5rem auto !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
 }
 
 .content h2 {

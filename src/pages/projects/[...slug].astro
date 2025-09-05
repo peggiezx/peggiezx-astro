@@ -17,10 +17,7 @@ const { Content } = await project.render();
 <BaseLayout title={project.data.title} description={project.data.description}>
   <article class="project-detail-page">
     <div class="project-header">
-      <img 
-        src={project.data.image} 
-        alt={project.data.title}
-      />
+      <h1>{project.data.title}</h1>
       
       <div class="project-links">
         {project.data.github && (
@@ -59,58 +56,45 @@ const { Content } = await project.render();
 </BaseLayout>
 
 <style>
-  /* Force light theme for project detail pages */
-  html, body {
-    background-color: #ffffff !important;
-    color: #2d3748 !important;
-  }
-
-  main {
-    background-color: #ffffff !important;
-  }
-
-  /* Override dark theme headings */
-  h1, h2, h3, h4, h5, h6 {
-    color: #1a202c !important;
-  }
-
-  p {
-    color: #4a5568 !important;
-  }
-
   .project-detail-page {
     max-width: 1000px;
     margin: 0 auto;
     padding: 8rem 2rem 3rem 2rem;
-    background: #ffffff;
-    color: #2d3748;
-    line-height: 1.6;
+  }
+
+  /* Force image styles with highest specificity */
+  .project-detail-page .project-content img,
+  .project-detail-page .project-content p img,
+  .project-content img[src*="cloudinary"],
+  img[alt="YelpCamp Homepage"] {
+    max-width: 500px !important;
+    width: 500px !important;
+    height: auto !important;
+    max-height: 280px !important;
+    object-fit: contain !important;
+    border-radius: 8px !important;
+    margin: 1.5rem auto !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+    display: block !important;
+    transform: scale(1) !important;
   }
   
-  .project-detail-page img {
-    width: 100%;
-    height: 300px;
-    object-fit: cover;
-    border-radius: 12px;
-    margin-bottom: 2rem;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  .project-header {
+    margin-bottom: 3rem;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 2rem;
   }
   
-  .project-detail-page .tech-stack {
+  .project-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+  }
+  
+  .project-links {
     display: flex;
+    gap: 1rem;
     flex-wrap: wrap;
-    gap: 0.75rem;
-    margin-bottom: 2rem;
-  }
-  
-  .project-detail-page .tech-tag {
-    padding: 0.5rem 1rem;
-    background: rgba(16, 185, 129, 0.1);
-    color: #10b981;
-    border-radius: 20px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    border: 1px solid rgba(16, 185, 129, 0.2);
   }
   
   .project-detail-page .btn {
@@ -141,67 +125,6 @@ const { Content } = await project.render();
     color: white;
   }
   
-  .project-detail-page h1 {
-    color: #1a202c;
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-  }
-  
-  .project-detail-page h2 {
-    color: #2d3748;
-    font-size: 1.8rem;
-    font-weight: 600;
-    margin-top: 2rem;
-    margin-bottom: 1rem;
-  }
-  
-  .project-detail-page h3 {
-    color: #2d3748;
-    font-size: 1.4rem;
-    font-weight: 600;
-    margin-top: 1.5rem;
-    margin-bottom: 0.75rem;
-  }
-  
-  .project-detail-page p {
-    color: #4a5568;
-    margin-bottom: 1rem;
-    font-size: 1rem;
-  }
-  
-  .project-detail-page ul {
-    color: #4a5568;
-    margin-bottom: 1rem;
-  }
-  
-  .project-detail-page li {
-    margin-bottom: 0.5rem;
-  }
-  
-  .project-detail-page code {
-    background: #f7fafc;
-    color: #2d3748;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    font-size: 0.9rem;
-  }
-  
-  .project-detail-page pre {
-    background: #2d3748;
-    color: #e2e8f0;
-    padding: 1.5rem;
-    border-radius: 8px;
-    overflow-x: auto;
-    margin: 1.5rem 0;
-  }
-  
-  .project-detail-page pre code {
-    background: none;
-    color: inherit;
-    padding: 0;
-  }
-  
   .back-link {
     margin-top: 3rem;
     padding-top: 2rem;
@@ -213,12 +136,8 @@ const { Content } = await project.render();
       padding: 6rem 1rem 2rem 1rem;
     }
     
-    .project-detail-page h1 {
+    .project-header h1 {
       font-size: 2rem;
-    }
-    
-    .project-detail-page img {
-      height: 200px;
     }
   }
 </style>

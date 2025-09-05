@@ -1,46 +1,40 @@
 ---
 title: "YelpCamp"
 description: "A full-stack campground review platform with authentication, image uploads, and interactive maps."
-image: "../../assets/projects/yelpcamp.png"
+stack: ["Node.js", "Express", "MongoDB", "JavaScript", "Bootstrap", "Passport.js", "Cloudinary", "Mapbox"]
 github: "https://github.com/peggiezx/yelpcamp"
 demo: "https://yelpcamp-peggiezx.onrender.com/"
 featured: true
 ---
 
-# YelpCamp
-
-A comprehensive campground review platform that allows users to discover, review, and share camping experiences. Built as a full-stack web application with modern authentication and real-time features.
-
-
-## Overview
+<div style="display: flex !important; gap: 1rem; justify-content: center; align-items: flex-start; margin: 1.5rem auto; flex-wrap: nowrap; max-width: 650px;">
+  <img src="https://res.cloudinary.com/peggiexplode/image/upload/v1757003660/yelpcamp-home_vrdgvt.png" alt="YelpCamp Homepage" style="width: 460px !important; height: 300px !important; object-fit: cover !important; border-radius: 8px; flex: none !important; display: block !important;" />
+  <img src="https://res.cloudinary.com/peggiexplode/image/upload/v1757004969/Screenshot_2025-09-04_at_1.51.23_AM_2_ujwyzl.png" alt="Second Image" style="width: 460px !important; height: 300px !important; object-fit: cover !important; border-radius: 8px; flex: none !important; display: block !important;" />
+</div>
 
 YelpCamp is a Yelp-inspired platform specifically designed for camping enthusiasts. Users can browse campgrounds, read reviews, add their own campgrounds, and share their outdoor experiences with the community.
 
-## Key Features
 
-- **User Authentication**: Secure login and registration system using Passport.js
-- **Campground Management**: Create, read, update, and delete campgrounds with full CRUD operations
-- **Review System**: Users can leave reviews and ratings for campgrounds they've visited
-- **Image Upload**: Cloudinary integration for seamless image storage and optimization
-- **Interactive Maps**: Mapbox integration showing campground locations
-- **Responsive Design**: Bootstrap-powered responsive UI that works on all devices
-- **Authorization**: Role-based permissions ensuring users can only modify their own content
-
-## Technical Implementation
+### Technical Implementation
 
 Built with Node.js and Express on the backend, using MongoDB for data persistence. The application follows RESTful routing patterns and implements proper error handling and validation. Security features include input sanitization, authentication middleware, and session management.
 
-## Getting Started
+**Authentication** • Passport.js  
+**Database** • MongoDB  
+**File Upload** • Cloudinary  
+**Maps** • Mapbox Integration  
+**UI Framework** • Bootstrap  
+**Authorization** • Role-based Permissions
 
-Visit the [live demo](https://yelpcamp-peggiezx.onrender.com/) to explore campgrounds, or check out the [source code](https://github.com/peggiezx/yelpcamp) to see the implementation details.
+### Demo Video
 
-## Learning Outcomes
-
-This project demonstrates proficiency in:
-- Full-stack JavaScript development
-- RESTful API design and implementation
-- Database modeling and relationships
-- User authentication and authorization
-- Third-party service integration (Cloudinary, Mapbox)
-- Responsive web design principles
-- Deployment and hosting on cloud platforms
+<div style="position: relative; width: 100%; max-width: 600px; margin: 1.5rem auto;">
+  <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
+    <iframe 
+      src="https://www.youtube.com/embed/M-DZPvMEdsI" 
+      style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" 
+      allowfullscreen
+      title="YelpCamp Demo">
+    </iframe>
+  </div>
+</div>

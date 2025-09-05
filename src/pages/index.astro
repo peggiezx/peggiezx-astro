@@ -38,17 +38,17 @@ const recentProjects = Array.from(projectGroups.entries())
   .sort((a, b) => b.latestPost.data.pubDate.valueOf() - a.latestPost.data.pubDate.valueOf())
   .slice(0, 3); // Back to 3 projects
 
-// Placeholder videos - replace with actual YouTube data later
+// Featured videos including YelpCamp project
 const featuredVideos = [
   {
-    id: 'placeholder-1',
-    title: 'Building a React Dashboard from Scratch',
-    description: 'Learn how to create a responsive dashboard with React, TypeScript, and Tailwind CSS',
-    thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg',
-    url: 'https://youtube.com/watch?v=dQw4w9WgXcQ',
-    duration: '24:15',
-    publishedAt: new Date('2024-01-15'),
-    tags: ['React', 'TypeScript', 'Tutorial']
+    id: 'yelpcamp-demo',
+    title: 'YelpCamp - Full Stack Campground Review Platform',
+    description: 'Complete walkthrough of YelpCamp featuring user authentication, image uploads, interactive maps, and CRUD operations',
+    thumbnail: 'https://img.youtube.com/vi/M-DZPvMEdsI/maxresdefault.jpg',
+    url: 'https://youtube.com/watch?v=M-DZPvMEdsI',
+    duration: '12:30',
+    publishedAt: new Date('2024-02-01'),
+    tags: ['Node.js', 'Express', 'MongoDB']
   },
   {
     id: 'placeholder-2',
@@ -65,6 +65,12 @@ const featuredVideos = [
 // Get featured projects
 const allProjects = await getCollection('projects');
 const featuredProjects = allProjects.filter(project => project.data.featured);
+
+// Project images mapping
+const projectImages = {
+  'yelpcamp': '/src/assets/projects/yelpcamp.png',
+  // Add more project images here as needed
+};
 ---
 
 <BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
@@ -82,16 +88,18 @@ const featuredProjects = allProjects.filter(project => project.data.featured);
         <div class="gallery-item initial-item">
           <a href={`/projects/${project.slug}/`} class="gallery-link">
             <div class="gallery-image">
-              <img src={project.data.image.src} alt={project.data.title} />
+              {projectImages[project.slug] && <img src={projectImages[project.slug]} alt={project.data.title} />}
             </div>
             <div class="gallery-content">
               <h3>{project.data.title}</h3>
               <p>{project.data.description}</p>
+              {project.data.stack && (
               <div class="tech-stack">
                 {project.data.stack.map(tech => (
                   <span class="tech-tag">{tech}</span>
                 ))}
               </div>
+              )}
             </div>
           </a>
         </div>
@@ -101,16 +109,18 @@ const featuredProjects = allProjects.filter(project => project.data.featured);
         <div class="gallery-item hidden-item" style="display: none;">
           <a href={`/projects/${project.slug}/`} class="gallery-link">
             <div class="gallery-image">
-              <img src={project.data.image.src} alt={project.data.title} />
+              {projectImages[project.slug] && <img src={projectImages[project.slug]} alt={project.data.title} />}
             </div>
             <div class="gallery-content">
               <h3>{project.data.title}</h3>
               <p>{project.data.description}</p>
+              {project.data.stack && (
               <div class="tech-stack">
                 {project.data.stack.map(tech => (
                   <span class="tech-tag">{tech}</span>
                 ))}
               </div>
+              )}
             </div>
           </a>
         </div>
@@ -288,7 +298,7 @@ const featuredProjects = allProjects.filter(project => project.data.featured);
       <div class="videos-grid" id="videos-grid">
         {featuredVideos.slice(0, 2).map(video => (
           <article class="video-card initial-video">
-            <div class="video-thumbnail">
+            <a href={video.url} target="_blank" rel="noopener noreferrer" class="video-thumbnail">
               <img src={video.thumbnail} alt={video.title} />
               <div class="play-overlay">
                 <svg viewBox="0 0 24 24" fill="currentColor">
@@ -296,11 +306,11 @@ const featuredProjects = allProjects.filter(project => project.data.featured);
                 </svg>
               </div>
               <span class="video-duration">{video.duration}</span>
-            </div>
+            </a>
             
             <div class="video-content">
               <div class="video-header">
-                <h3>Tutorial</h3>
+                <h3>Demo</h3>
                 <span class="video-badge">YouTube</span>
               </div>
               
@@ -329,7 +339,7 @@ const featuredProjects = allProjects.filter(project => project.data.featured);
         
         {featuredVideos.slice(2).map(video => (
           <article class="video-card hidden-video" style="display: none;">
-            <div class="video-thumbnail">
+            <a href={video.url} target="_blank" rel="noopener noreferrer" class="video-thumbnail">
               <img src={video.thumbnail} alt={video.title} />
               <div class="play-overlay">
                 <svg viewBox="0 0 24 24" fill="currentColor">
@@ -337,7 +347,7 @@ const featuredProjects = allProjects.filter(project => project.data.featured);
                 </svg>
               </div>
               <span class="video-duration">{video.duration}</span>
-            </div>
+            </a>
             
             <div class="video-content">
               <div class="video-header">
@@ -498,15 +508,15 @@ const featuredProjects = allProjects.filter(project => project.data.featured);
   
   /* Project cards styling */
   .gallery-grid {
-    display: flex !important;
-    justify-content: space-between !important;
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 2rem !important;
     width: calc(100% - 4rem) !important;
     margin: 0 2rem 0 2rem !important;
   }
 
   .gallery-item {
-    width: 480px !important;
-    flex-shrink: 0 !important;
+    width: 100% !important;
     background: rgba(255,255,255, 0.25) !important;
     backdrop-filter: blur(15px) saturate(180%) !important;
     -webkit-backdrop-filter: blur(15px) saturate(180%) !important;
@@ -750,6 +760,8 @@ const featuredProjects = allProjects.filter(project => project.data.featured);
     width: 100%;
     height: 140px;
     overflow: hidden;
+    display: block;
+    text-decoration: none;
   }
   
   .video-thumbnail img {
