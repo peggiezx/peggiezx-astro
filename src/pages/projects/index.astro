@@ -18,13 +18,13 @@ const projects = await getCollection('projects');
                 <div class="gallery-item">
                     <a href={`/projects/${project.slug}/`} class="gallery-link">
                         <div class="gallery-image">
-                            <img src={project.data.image.src} alt={project.data.title} />
+                            {project.data.image && <img src={project.data.image.src} alt={project.data.title} />}
                         </div>
                         <div class="gallery-content">
                             <h3>{project.data.title}</h3>
                             <p>{project.data.description}</p>
                             <div class="tech-stack">
-                                {project.data.stack.map(tech => (
+                                {project.data.stack?.map(tech => (
                                     <span class="tech-tag">{tech}</span>
                                 ))}
                             </div>
