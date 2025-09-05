@@ -1,0 +1,39 @@
+---
+export interface Props {
+  title: string;
+  desc: string;
+  image: string;
+  href: string;
+  stack?: string[];
+}
+
+const { title, desc, image, href, stack = [] } = Astro.props;
+---
+
+<a
+  href={href}
+>
+  <img
+    src={image}
+    alt={title}
+    
+  />
+  
+  <div class="p-4">
+    <h3 >
+      {title}
+    </h3>
+    <p >
+      {desc}
+    </p>
+    {stack.length > 0 && (
+      <ul >
+        {stack.map(item => (
+          <li >
+            {item}
+          </li>
+        ))}
+      </ul>
+    )}
+  </div>
+</a>

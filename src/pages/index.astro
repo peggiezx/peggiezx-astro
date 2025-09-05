@@ -1,11 +1,1159 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import { getCollection } from 'astro:content';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+// Get blog posts organized by project
+const allPosts = await getCollection('blog');
+allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+// Group posts by project (extracted from slug path)
+const projectGroups = new Map();
+allPosts.forEach(post => {
+  const projectName = post.slug.split('/')[0];
+  if (!projectGroups.has(projectName)) {
+    projectGroups.set(projectName, []);
+  }
+  projectGroups.get(projectName).push(post);
+});
+
+// Project descriptions
+const projectDescriptions = {
+  'circleshare': 'My recent social journal application',
+  'technical-training': 'How I create technical curriculum to help developers',  
+  'developer-advocacy': 'How I use my voice to reach out to a broader community'
+};
+
+// Convert to array and get most recent projects
+const recentProjects = Array.from(projectGroups.entries())
+  .map(([project, posts]) => ({
+    name: project,
+    displayName: project.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+    description: projectDescriptions[project] || 'Learning and building in public',
+    posts: posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()),
+    latestPost: posts[0],
+    totalPosts: posts.length
+  }))
+  .sort((a, b) => b.latestPost.data.pubDate.valueOf() - a.latestPost.data.pubDate.valueOf())
+  .slice(0, 3); // Back to 3 projects
+
+// Featured videos including YelpCamp project
+const featuredVideos = [
+  {
+    id: 'yelpcamp-demo',
+    title: 'YelpCamp - Full Stack Campground Review Platform',
+    description: 'Complete walkthrough of YelpCamp featuring user authentication, image uploads, interactive maps, and CRUD operations',
+    thumbnail: 'https://img.youtube.com/vi/M-DZPvMEdsI/maxresdefault.jpg',
+    url: 'https://youtube.com/watch?v=M-DZPvMEdsI',
+    duration: '12:30',
+    publishedAt: new Date('2024-02-01'),
+    tags: ['Node.js', 'Express', 'MongoDB']
+  },
+  {
+    id: 'placeholder-2',
+    title: 'FastAPI Complete Tutorial',
+    description: 'Build a full-stack application with FastAPI and PostgreSQL from zero to deployment',
+    thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg',
+    url: 'https://youtube.com/watch?v=dQw4w9WgXcQ',
+    duration: '18:42',
+    publishedAt: new Date('2024-01-10'),
+    tags: ['FastAPI', 'Python', 'Backend']
+  }
+];
+
+// Get featured projects
+const allProjects = await getCollection('projects');
+const featuredProjects = allProjects.filter(project => project.data.featured);
+
+// Project images mapping
+const projectImages = {
+  'yelpcamp': '/src/assets/projects/yelpcamp.png',
+  // Add more project images here as needed
+};
 ---
 
-<Layout>
-	<Welcome />
-</Layout>
+<BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
+  <Hero />
+
+  <div class="container" style="margin-top: -2rem;">
+    <section id="projects">
+      <h2 style="padding-left: 2rem;">Featured Projects</h2>
+      <p style="padding-left: 2rem;">
+        A showcase of my recent work in developer tools, cloud computing, and software engineering.
+      </p>
+
+      <div class="gallery-grid" id="projects-grid" style="margin-left: 2rem; gap: 3rem;">
+        {featuredProjects.slice(0, 2).map(project => (
+        <div class="gallery-item initial-item">
+          <a href={`/projects/${project.slug}/`} class="gallery-link">
+            <div class="gallery-image">
+              {projectImages[project.slug] && <img src={projectImages[project.slug]} alt={project.data.title} />}
+            </div>
+            <div class="gallery-content">
+              <h3>{project.data.title}</h3>
+              <p>{project.data.description}</p>
+              {project.data.stack && (
+              <div class="tech-stack">
+                {project.data.stack.map(tech => (
+                  <span class="tech-tag">{tech}</span>
+                ))}
+              </div>
+              )}
+            </div>
+          </a>
+        </div>
+        ))}
+        
+        {featuredProjects.slice(2).map(project => (
+        <div class="gallery-item hidden-item" style="display: none;">
+          <a href={`/projects/${project.slug}/`} class="gallery-link">
+            <div class="gallery-image">
+              {projectImages[project.slug] && <img src={projectImages[project.slug]} alt={project.data.title} />}
+            </div>
+            <div class="gallery-content">
+              <h3>{project.data.title}</h3>
+              <p>{project.data.description}</p>
+              {project.data.stack && (
+              <div class="tech-stack">
+                {project.data.stack.map(tech => (
+                  <span class="tech-tag">{tech}</span>
+                ))}
+              </div>
+              )}
+            </div>
+          </a>
+        </div>
+        ))}
+        
+        <!-- Placeholder cards - first one visible initially -->
+        <div class="gallery-item placeholder-card initial-item">
+          <div class="gallery-image placeholder-image">
+            <div class="placeholder-content">+</div>
+          </div>
+          <div class="gallery-content">
+            <h3>More Projects</h3>
+            <p>Check out additional projects and work samples.</p>
+            <div class="tech-stack">
+              <span class="tech-tag">Coming Soon</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="gallery-item placeholder-card hidden-item" style="display: none;">
+          <div class="gallery-image placeholder-image">
+            <div class="placeholder-content">★</div>
+          </div>
+          <div class="gallery-content">
+            <h3>Featured Work</h3>
+            <p>Explore highlighted projects and collaborations.</p>
+            <div class="tech-stack">
+              <span class="tech-tag">In Progress</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="gallery-item placeholder-card hidden-item" style="display: none;">
+          <div class="gallery-image placeholder-image">
+            <div class="placeholder-content">⚡</div>
+          </div>
+          <div class="gallery-content">
+            <h3>Innovation Lab</h3>
+            <p>Experimental projects and cutting-edge technologies.</p>
+            <div class="tech-stack">
+              <span class="tech-tag">Research</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div style="text-align: center; margin-top: 2rem;">
+        <button class="btn" id="view-all-projects-btn">
+          View All Projects
+        </button>
+      </div>
+
+    </section>
+
+    <section id="blog">
+      <h2 style="padding-left: 2rem;">Blog</h2>
+      <p style="padding-left: 2rem;">
+        Follow my journey building projects and learning new technologies through daily logs.
+      </p>
+
+      <div class="blog-projects-grid" id="blog-grid">
+        {recentProjects.slice(0, 1).map((project, index) => (
+          <article class="project-blog-card initial-blog-item" data-project={project.name}>
+            <div class="topic-header" data-project-index={index}>
+              <div class="topic-info">
+                <div class="topic-title">{project.displayName}</div>
+                <div class="topic-description">{project.description}</div>
+                <div class="topic-meta">{project.totalPosts} entries</div>
+              </div>
+              <button class="collapse-btn expanded" aria-label="Collapse entries">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </button>
+            </div>
+            
+            <div class="blog-entries">
+              <a href={`/blog/${project.latestPost.slug}/`} class="entry-item featured-entry">
+                <div class="entry-content">
+                  <h4 class="entry-title">{project.latestPost.data.title}</h4>
+                  <time class="entry-date">
+                    {project.latestPost.data.pubDate.toLocaleDateString(undefined, {
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric'
+                    })}
+                  </time>
+                </div>
+                <div class="entry-badge">Latest</div>
+              </a>
+              
+              <div class="more-entries">
+                {project.posts.slice(1).map(post => (
+                  <a href={`/blog/${post.slug}/`} class="entry-item">
+                    <div class="entry-content">
+                      <span class="entry-title">{post.data.title}</span>
+                      <time class="entry-date">
+                        {post.data.pubDate.toLocaleDateString(undefined, {
+                          month: 'short',
+                          day: 'numeric'
+                        })}
+                      </time>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </article>
+        ))}
+        
+        {recentProjects.slice(1).map((project, index) => (
+          <article class="project-blog-card hidden-blog-item" data-project={project.name} style="display: none;">
+            <div class="topic-header" data-project-index={index + 1}>
+              <div class="topic-info">
+                <div class="topic-title">{project.displayName}</div>
+                <div class="topic-description">{project.description}</div>
+                <div class="topic-meta">{project.totalPosts} entries</div>
+              </div>
+              <button class="collapse-btn expanded" aria-label="Collapse entries">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </button>
+            </div>
+            
+            <div class="blog-entries">
+              <a href={`/blog/${project.latestPost.slug}/`} class="entry-item featured-entry">
+                <div class="entry-content">
+                  <h4 class="entry-title">{project.latestPost.data.title}</h4>
+                  <time class="entry-date">
+                    {project.latestPost.data.pubDate.toLocaleDateString(undefined, {
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric'
+                    })}
+                  </time>
+                </div>
+                <div class="entry-badge">Latest</div>
+              </a>
+              
+              <div class="more-entries">
+                {project.posts.slice(1).map(post => (
+                  <a href={`/blog/${post.slug}/`} class="entry-item">
+                    <div class="entry-content">
+                      <span class="entry-title">{post.data.title}</span>
+                      <time class="entry-date">
+                        {post.data.pubDate.toLocaleDateString(undefined, {
+                          month: 'short',
+                          day: 'numeric'
+                        })}
+                      </time>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <div style="text-align: center; margin-top: 2rem;">
+        <button class="btn" id="view-all-blog-btn">
+          View All Topics
+        </button>
+      </div>
+
+    </section>
+
+    <section id="videos">
+      <h2 style="padding-left: 2rem;">Videos</h2>
+      <p style="padding-left: 2rem;">
+        Watch me build projects and teach technologies step by step through comprehensive tutorials.
+      </p>
+
+      <div class="videos-grid" id="videos-grid">
+        {featuredVideos.slice(0, 2).map(video => (
+          <article class="video-card initial-video">
+            <a href={video.url} target="_blank" rel="noopener noreferrer" class="video-thumbnail">
+              <img src={video.thumbnail} alt={video.title} />
+              <div class="play-overlay">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+              </div>
+              <span class="video-duration">{video.duration}</span>
+            </a>
+            
+            <div class="video-content">
+              <div class="video-header">
+                <h3>Demo</h3>
+                <span class="video-badge">YouTube</span>
+              </div>
+              
+              <a href={video.url} target="_blank" rel="noopener noreferrer">
+                <h4>{video.title}</h4>
+                <p class="video-description">{video.description}</p>
+                
+                <div class="video-meta">
+                  <time>
+                    {video.publishedAt.toLocaleDateString(undefined, {
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric'
+                    })}
+                  </time>
+                  <div class="video-tags">
+                    {video.tags.map(tag => (
+                      <span class="video-tag">{tag}</span>
+                    ))}
+                  </div>
+                </div>
+              </a>
+            </div>
+          </article>
+        ))}
+        
+        {featuredVideos.slice(2).map(video => (
+          <article class="video-card hidden-video" style="display: none;">
+            <a href={video.url} target="_blank" rel="noopener noreferrer" class="video-thumbnail">
+              <img src={video.thumbnail} alt={video.title} />
+              <div class="play-overlay">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+              </div>
+              <span class="video-duration">{video.duration}</span>
+            </a>
+            
+            <div class="video-content">
+              <div class="video-header">
+                <h3>Tutorial</h3>
+                <span class="video-badge">YouTube</span>
+              </div>
+              
+              <a href={video.url} target="_blank" rel="noopener noreferrer">
+                <h4>{video.title}</h4>
+                <p class="video-description">{video.description}</p>
+                
+                <div class="video-meta">
+                  <time>
+                    {video.publishedAt.toLocaleDateString(undefined, {
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric'
+                    })}
+                  </time>
+                  <div class="video-tags">
+                    {video.tags.map(tag => (
+                      <span class="video-tag">{tag}</span>
+                    ))}
+                  </div>
+                </div>
+              </a>
+            </div>
+          </article>
+        ))}
+        
+        <!-- Placeholder video cards -->
+        <article class="video-card placeholder-video hidden-video" style="display: none;">
+          <div class="video-thumbnail placeholder-video-thumb">
+            <div class="placeholder-video-content">📹</div>
+            <span class="video-duration">--:--</span>
+          </div>
+          
+          <div class="video-content">
+            <div class="video-header">
+              <h3>Coming Soon</h3>
+              <span class="video-badge">YouTube</span>
+            </div>
+            
+            <div class="video-info">
+              <h4>New Tutorial Series</h4>
+              <p class="video-description">Exciting new content coming soon to help you level up your development skills.</p>
+              
+              <div class="video-meta">
+                <time>Coming Soon</time>
+                <div class="video-tags">
+                  <span class="video-tag">Tutorial</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+        
+        <article class="video-card placeholder-video hidden-video" style="display: none;">
+          <div class="video-thumbnail placeholder-video-thumb">
+            <div class="placeholder-video-content">🎬</div>
+            <span class="video-duration">--:--</span>
+          </div>
+          
+          <div class="video-content">
+            <div class="video-header">
+              <h3>Workshop</h3>
+              <span class="video-badge">YouTube</span>
+            </div>
+            
+            <div class="video-info">
+              <h4>Live Coding Sessions</h4>
+              <p class="video-description">Interactive coding workshops and live development sessions with Q&A.</p>
+              
+              <div class="video-meta">
+                <time>Coming Soon</time>
+                <div class="video-tags">
+                  <span class="video-tag">Live</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div style="text-align: center; margin-top: 2rem;">
+        <button class="btn" id="view-all-videos-btn">
+          View All Videos
+        </button>
+      </div>
+
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  body {
+    background: url('/images/hero-bg-2.png') center/cover no-repeat fixed;
+  }
+  
+  /* Fix scroll offset for fixed header */
+  html {
+    scroll-padding-top: 60px;
+  }
+  
+  section[id] {
+    scroll-margin-top: 60px;
+  }
+  
+  #projects h2 {
+    color: #1a202c;
+    font-weight: 700;
+  }
+  
+  #projects p {
+    color: #2d3748;
+    font-weight: 500;
+  }
+  
+  #projects .gallery-content h3 {
+    color: #1a202c;
+    font-weight: 600;
+  }
+  
+  #projects .gallery-content p {
+    color: #2d3748;
+    font-weight: 400;
+  }
+  
+  
+  /* Latest Articles section */
+  section h2:not(#projects h2) {
+    color: #1a202c;
+    font-weight: 700;
+  }
+  
+  section p:not(#projects p) {
+    color: #2d3748;
+    font-weight: 500;
+  }
+  
+  .blog-post h3 {
+    color: #1a202c !important;
+    font-weight: 600;
+  }
+  
+  .blog-post p {
+    color: #2d3748 !important;
+  }
+  
+  .blog-post time {
+    color: #4a5568 !important;
+  }
+  
+  .blog-post span {
+    color: #10b981 !important;
+    font-weight: 600;
+  }
+  
+  /* Project cards styling */
+  .gallery-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 2rem !important;
+    width: calc(100% - 4rem) !important;
+    margin: 0 2rem 0 2rem !important;
+  }
+
+  .gallery-item {
+    width: 100% !important;
+    background: rgba(255,255,255, 0.25) !important;
+    backdrop-filter: blur(15px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(15px) saturate(180%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12) !important;
+  }
+  
+  .gallery-item:hover {
+    transform: translateY(-4px) !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
+    border-color: rgba(0, 0, 0, 0.2) !important;
+  }
+  
+  .gallery-image {
+    height: 250px !important;
+    border-radius: 12px 12px 0 0 !important;
+    overflow: hidden !important;
+  }
+  
+  .gallery-content {
+    padding: 1rem 1.5rem 1.5rem 1.5rem !important;
+  }
+  
+  /* Tech tags styling */
+  .gallery-content .tech-tag {
+    background: #6b7280 !important;
+    color: white !important;
+    border: 1px solid #6b7280 !important;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    padding: 0.25rem 0.5rem !important;
+    font-size: 0.7rem !important;
+    border-radius: 12px !important;
+  }
+  
+  .gallery-content .tech-tag:hover {
+    background: #10b981 !important;
+    border-color: #10b981 !important;
+    transform: translateY(-1px);
+  }
+  
+  /* Placeholder cards styling */
+  .placeholder-card {
+    opacity: 0.8 !important;
+    cursor: default !important;
+  }
+  
+  .placeholder-image {
+    background: linear-gradient(135deg, #f3f4f6, #e5e7eb) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  
+  .placeholder-content {
+    font-size: 3rem !important;
+    color: #9ca3af !important;
+    font-weight: 300 !important;
+  }
+  
+  .placeholder-card:hover {
+    transform: none !important;
+    opacity: 0.9 !important;
+  }
+  
+  /* Semi-transparent overlays for sections */
+  #projects {
+    background: rgba(255, 255, 255, 0.85) !important;
+    padding: 2rem !important;
+    border-radius: 16px !important;
+    backdrop-filter: blur(10px) !important;
+    margin: 2rem 0 !important;
+  }
+  
+  section:not(#projects) {
+    background: rgba(255, 255, 255, 0.85) !important;
+    padding: 2rem !important;
+    border-radius: 16px !important;
+    backdrop-filter: blur(10px) !important;
+    margin: 2rem 0 !important;
+  }
+  
+  /* Project blog cards styling */
+  .blog-projects-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin: 2rem 2rem 2rem 2rem;
+    width: calc(100% - 4rem);
+  }
+  
+  /* Videos grid styling */
+  .videos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin: 2rem 2rem 2rem 2rem;
+    width: calc(100% - 4rem);
+  }
+  
+  .project-blog-card {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    border-radius: 12px !important;
+    padding: 1.5rem !important;
+    transition: all 0.2s ease;
+    grid-column: span 1;
+  }
+  
+  .project-blog-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  .project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  .project-info h3 {
+    margin: 0 0 0.25rem 0 !important;
+    color: #1a202c !important;
+    font-size: 1.2rem !important;
+  }
+  
+  .project-description {
+    margin: 0 0 0.5rem 0 !important;
+    color: #6b7280 !important;
+    font-size: 0.9rem !important;
+    font-style: italic;
+  }
+  
+  .post-count {
+    color: #6b7280 !important;
+    font-size: 0.85rem !important;
+    font-weight: 500;
+  }
+  
+  .expand-btn {
+    background: none;
+    border: none;
+    color: #6b7280;
+    cursor: pointer;
+    padding: 0.25rem;
+    transition: all 0.2s ease;
+  }
+  
+  .expand-btn:hover {
+    color: #10b981;
+    transform: scale(1.1);
+  }
+  
+  .expand-btn svg {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+  }
+  
+  .expand-btn.expanded svg {
+    transform: rotate(180deg);
+  }
+  
+  /* Show post list by default */
+  .post-list {
+    display: block !important;
+  }
+  
+  .latest-post a {
+    text-decoration: none;
+    display: block;
+  }
+  
+  .latest-post h4 {
+    margin: 0 0 0.5rem 0 !important;
+    color: #1a202c !important;
+    font-size: 1rem !important;
+    font-weight: 600;
+  }
+  
+  .latest-post time {
+    color: #6b7280 !important;
+    font-size: 0.85rem;
+  }
+  
+  .post-list {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  .post-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+  }
+  
+  .post-item:last-child {
+    border-bottom: none;
+  }
+  
+  .post-item:hover {
+    background: rgba(16, 185, 129, 0.05);
+    border-radius: 6px;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+  
+  .post-title {
+    color: #2d3748 !important;
+    font-weight: 500;
+    flex: 1;
+  }
+  
+  .post-item time {
+    color: #6b7280 !important;
+    font-size: 0.8rem;
+    margin-left: 1rem;
+  }
+  
+  /* Video card styling */
+  .video-card {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    border-radius: 12px !important;
+    overflow: hidden;
+    transition: all 0.2s ease;
+  }
+  
+  .video-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  .video-thumbnail {
+    position: relative;
+    width: 100%;
+    height: 140px;
+    overflow: hidden;
+    display: block;
+    text-decoration: none;
+  }
+  
+  .video-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .play-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    transition: all 0.2s ease;
+  }
+  
+  .video-card:hover .play-overlay {
+    background: rgba(16, 185, 129, 0.9);
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+  
+  .play-overlay svg {
+    width: 24px;
+    height: 24px;
+    margin-left: 2px;
+  }
+  
+  .video-duration {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+  
+  .video-content {
+    padding: 1.25rem;
+  }
+  
+  .video-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  .video-header h3 {
+    margin: 0 !important;
+    color: #1a202c !important;
+    font-size: 1rem !important;
+  }
+  
+  .video-badge {
+    background: #ff0000;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  
+  .video-content a {
+    text-decoration: none;
+    display: block;
+  }
+  
+  .video-content h4 {
+    margin: 0 0 0.5rem 0 !important;
+    color: #1a202c !important;
+    font-size: 0.95rem !important;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  
+  .video-description {
+    color: #6b7280 !important;
+    font-size: 0.8rem !important;
+    line-height: 1.4;
+    margin: 0 0 1rem 0 !important;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .video-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1rem;
+  }
+  
+  .video-meta time {
+    color: #6b7280 !important;
+    font-size: 0.85rem;
+  }
+  
+  .video-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  
+  .video-tag {
+    background: #6b7280 !important;
+    color: white !important;
+    padding: 0.25rem 0.5rem !important;
+    font-size: 0.7rem !important;
+    border-radius: 12px !important;
+    font-weight: 500;
+  }
+  
+  /* Placeholder video card styling */
+  .placeholder-video {
+    opacity: 0.8 !important;
+  }
+  
+  .placeholder-video:hover {
+    opacity: 0.9 !important;
+  }
+  
+  .placeholder-video-thumb {
+    background: linear-gradient(135deg, #f3f4f6, #e5e7eb) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: relative;
+  }
+  
+  .placeholder-video-content {
+    font-size: 3rem !important;
+    color: #9ca3af !important;
+    font-weight: 300 !important;
+  }
+  
+  .placeholder-video .video-info {
+    pointer-events: none;
+  }
+  
+  /* New Blog Card Styling */
+  .topic-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    background: rgba(107, 114, 128, 0.05);
+    border-left: 3px solid #6b7280;
+  }
+  
+  .topic-header[data-project-index="0"] {
+    background: rgba(59, 130, 246, 0.05);
+    border-left-color: #3b82f6;
+  }
+  
+  .topic-header[data-project-index="1"] {
+    background: rgba(16, 185, 129, 0.05);
+    border-left-color: #10b981;
+  }
+  
+  .topic-header[data-project-index="2"] {
+    background: rgba(245, 158, 11, 0.05);
+    border-left-color: #f59e0b;
+  }
+  
+  .topic-info {
+    flex: 1;
+  }
+  
+  .topic-title {
+    font-size: 0.9rem !important;
+    font-weight: 500 !important;
+    color: #6b7280 !important;
+    margin: 0 0 0.25rem 0 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  .topic-description {
+    margin: 0 0 0.25rem 0 !important;
+    color: #9ca3af !important;
+    font-size: 0.8rem !important;
+    font-style: italic;
+  }
+  
+  .topic-meta {
+    color: #9ca3af !important;
+    font-size: 0.75rem !important;
+    font-weight: 500;
+  }
+  
+  .collapse-btn {
+    background: none;
+    border: none;
+    color: #9ca3af;
+    cursor: pointer;
+    padding: 0.25rem;
+    transition: all 0.2s ease;
+    border-radius: 4px;
+  }
+  
+  .collapse-btn:hover {
+    color: #6b7280;
+    background: rgba(107, 114, 128, 0.1);
+  }
+  
+  .collapse-btn svg {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.2s ease;
+  }
+  
+  .collapse-btn.expanded svg {
+    transform: rotate(180deg);
+  }
+  
+  .blog-entries {
+    margin-top: 0.5rem;
+  }
+  
+  .entry-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    text-decoration: none;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    transition: all 0.2s ease;
+    background: rgba(255, 255, 255, 0.5);
+  }
+  
+  .entry-item:hover {
+    background: rgba(16, 185, 129, 0.05);
+    border-color: rgba(16, 185, 129, 0.2);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .featured-entry {
+    border-color: rgba(16, 185, 129, 0.3);
+    background: rgba(16, 185, 129, 0.02);
+  }
+  
+  .entry-content {
+    flex: 1;
+  }
+  
+  .entry-title {
+    color: #1a202c !important;
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    margin: 0 0 0.25rem 0 !important;
+    line-height: 1.4;
+  }
+  
+  .entry-date {
+    color: #6b7280 !important;
+    font-size: 0.8rem !important;
+    font-weight: 500;
+  }
+  
+  .entry-badge {
+    background: #10b981;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  .more-entries .entry-item {
+    margin-bottom: 0.25rem;
+    padding: 0.5rem 1rem;
+  }
+  
+  .more-entries .entry-title {
+    font-size: 0.9rem !important;
+    font-weight: 500 !important;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const collapseBtns = document.querySelectorAll('.collapse-btn');
+    
+    collapseBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const card = this.closest('.project-blog-card');
+        const entries = card.querySelector('.more-entries');
+        const isExpanded = this.classList.contains('expanded');
+        
+        if (isExpanded) {
+          // Collapse - hide additional entries
+          entries.style.display = 'none';
+          this.classList.remove('expanded');
+          this.setAttribute('aria-label', 'Expand entries');
+        } else {
+          // Expand - show additional entries
+          entries.style.display = 'block';
+          this.classList.add('expanded');
+          this.setAttribute('aria-label', 'Collapse entries');
+        }
+      });
+    });
+
+    // View All Projects functionality
+    const viewAllProjectsBtn = document.getElementById('view-all-projects-btn');
+    if (viewAllProjectsBtn) {
+      viewAllProjectsBtn.addEventListener('click', function() {
+        const projectsGrid = document.getElementById('projects-grid');
+        const hiddenItems = projectsGrid.querySelectorAll('.hidden-item');
+        const isExpanded = this.textContent.includes('Show Less');
+        
+        if (isExpanded) {
+          // Collapse - hide additional items
+          hiddenItems.forEach(item => {
+            item.style.display = 'none';
+          });
+          this.textContent = 'View All Projects';
+        } else {
+          // Expand - show all items
+          hiddenItems.forEach(item => {
+            item.style.display = 'block';
+          });
+          this.textContent = 'Show Less Projects';
+        }
+      });
+    }
+
+    // View All Blog Topics functionality
+    const viewAllBlogBtn = document.getElementById('view-all-blog-btn');
+    if (viewAllBlogBtn) {
+      viewAllBlogBtn.addEventListener('click', function() {
+        const blogGrid = document.getElementById('blog-grid');
+        const hiddenItems = blogGrid.querySelectorAll('.hidden-blog-item');
+        const isExpanded = this.textContent.includes('Show Less');
+        
+        if (isExpanded) {
+          // Collapse - hide additional topics
+          hiddenItems.forEach(item => {
+            item.style.display = 'none';
+          });
+          this.textContent = 'View All Topics';
+        } else {
+          // Expand - show all topics
+          hiddenItems.forEach(item => {
+            item.style.display = 'block';
+          });
+          this.textContent = 'Show Less Topics';
+        }
+      });
+    }
+
+    // View All Videos functionality
+    const viewAllVideosBtn = document.getElementById('view-all-videos-btn');
+    if (viewAllVideosBtn) {
+      viewAllVideosBtn.addEventListener('click', function() {
+        const videosGrid = document.getElementById('videos-grid');
+        const hiddenVideos = videosGrid.querySelectorAll('.hidden-video');
+        const isExpanded = this.textContent.includes('Show Less');
+        
+        if (isExpanded) {
+          // Collapse - hide additional videos
+          hiddenVideos.forEach(item => {
+            item.style.display = 'none';
+          });
+          this.textContent = 'View All Videos';
+        } else {
+          // Expand - show all videos
+          hiddenVideos.forEach(item => {
+            item.style.display = 'block';
+          });
+          this.textContent = 'Show Less Videos';
+        }
+      });
+    }
+  });
+</script>

@@ -1,0 +1,376 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+// Pre-generate all blog slugs
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  
+  // Group posts by project (extracted from slug path)
+  const projectGroups = new Map();
+  posts.forEach(post => {
+    const projectName = post.slug.split('/')[0];
+    if (!projectGroups.has(projectName)) {
+      projectGroups.set(projectName, []);
+    }
+    projectGroups.get(projectName).push(post);
+  });
+  
+  // Sort posts within each project by date (newest first) and generate navigation
+  const allPaths = [];
+  
+  projectGroups.forEach((projectPosts, projectName) => {
+    const sortedPosts = projectPosts.sort((a, b) => 
+      b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+    );
+    
+    sortedPosts.forEach((post, index) => {
+      const prevPost = index < sortedPosts.length - 1 ? sortedPosts[index + 1] : null;
+      const nextPost = index > 0 ? sortedPosts[index - 1] : null;
+      
+      allPaths.push({
+        params: { slug: post.slug },
+        props: { 
+          post,
+          prevPost,
+          nextPost
+        }
+      });
+    });
+  });
+  
+  return allPaths;
+}
+
+// Get the post and navigation from props (passed from getStaticPaths)
+const { post, prevPost, nextPost } = Astro.props;
+
+// Destructure frontmatter into local variables
+const { title, description = '', pubDate, heroImage } = post.data;
+
+// Render the MDX content
+const { Content } = await post.render();
+---
+
+<BaseLayout title={title} description={description}>
+  <article class="blog-detail-page">
+      <header>
+        {heroImage && (
+          <img 
+            src={heroImage.src} 
+            alt={heroImage.alt || title}
+          />
+        )}
+        <h1>{title}</h1>
+        <div class="post-meta">
+          <time>
+            {pubDate.toLocaleDateString(undefined, {
+              year: 'numeric', 
+              month: 'long', 
+              day: 'numeric'
+            })}
+          </time>
+        </div>
+      </header>
+      
+      <div class="content">
+        <Content />
+      </div>
+      
+      <div class="blog-navigation">
+        <div class="nav-buttons">
+          {prevPost ? (
+            <a href={`/blog/${prevPost.slug}/`} class="btn btn-nav btn-prev">
+              <span class="nav-arrow">←</span>
+              <span class="nav-label">Previous</span>
+            </a>
+          ) : (
+            <div class="btn btn-nav btn-disabled">
+              <span class="nav-arrow">←</span>
+              <span class="nav-label">Previous</span>
+            </div>
+          )}
+          
+          {nextPost ? (
+            <a href={`/blog/${nextPost.slug}/`} class="btn btn-nav btn-next">
+              <span class="nav-label">Next</span>
+              <span class="nav-arrow">→</span>
+            </a>
+          ) : (
+            <div class="btn btn-nav btn-disabled">
+              <span class="nav-label">Next</span>
+              <span class="nav-arrow">→</span>
+            </div>
+          )}
+        </div>
+      </div>
+    </article>
+</BaseLayout>
+
+<style>
+  /* Force light theme for blog detail pages */
+  html, body {
+    background-color: #ffffff !important;
+    color: #2d3748 !important;
+  }
+
+  main {
+    background-color: #ffffff !important;
+  }
+
+  /* Override dark theme headings */
+  h1, h2, h3, h4, h5, h6 {
+    color: #1a202c !important;
+  }
+
+  p {
+    color: #4a5568 !important;
+  }
+
+  .blog-detail-page {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 8rem 2rem 3rem 2rem;
+    background: #ffffff;
+    color: #2d3748;
+    line-height: 1.6;
+  }
+  
+  .blog-detail-page header {
+    margin-bottom: 3rem;
+  }
+  
+  .blog-detail-page img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .blog-detail-page h1 {
+    color: #1a202c;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+  }
+  
+  .blog-detail-page time {
+    color: #6b7280;
+    font-size: 1rem;
+    font-weight: 500;
+  }
+  
+  .blog-detail-page .content h2 {
+    color: #2d3748;
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .blog-detail-page .content h3 {
+    color: #2d3748;
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .blog-detail-page .content p {
+    color: #4a5568;
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+  
+  .blog-detail-page .content ul,
+  .blog-detail-page .content ol {
+    color: #4a5568;
+    margin-bottom: 1.5rem;
+    padding-left: 2rem;
+  }
+  
+  .blog-detail-page .content li {
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+  }
+  
+  .blog-detail-page .content blockquote {
+    border-left: 4px solid #10b981;
+    padding-left: 1.5rem;
+    margin: 2rem 0;
+    font-style: italic;
+    color: #4a5568;
+    background: #f7fafc;
+    padding: 1rem 1.5rem;
+    border-radius: 0 8px 8px 0;
+  }
+  
+  .blog-detail-page .content code {
+    background: #f7fafc;
+    color: #2d3748;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+  }
+  
+  .blog-detail-page .content pre {
+    background: #2d3748;
+    color: #e2e8f0;
+    padding: 1.5rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .blog-detail-page .content pre code {
+    background: none;
+    color: inherit;
+    padding: 0;
+  }
+  
+  .blog-detail-page .content strong {
+    font-weight: 600;
+    color: #1a202c;
+  }
+  
+  .blog-detail-page .content a {
+    color: #10b981;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 2px;
+    transition: all 0.2s ease;
+  }
+  
+  .blog-detail-page .content a:hover {
+    color: #059669;
+    text-decoration-thickness: 3px;
+  }
+  
+  .blog-navigation {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e2e8f0;
+  }
+  
+  .nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  
+  .btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background: #10b981;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  }
+  
+  .btn-secondary {
+    background: transparent;
+    color: #6b7280;
+    border: 2px solid #6b7280;
+  }
+  
+  .btn-secondary:hover {
+    background: #6b7280;
+    color: white;
+  }
+  
+  .btn-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    background: rgba(16, 185, 129, 0.05);
+    border: 2px solid rgba(16, 185, 129, 0.2);
+    color: #10b981;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    min-width: 120px;
+  }
+  
+  .btn-nav:hover {
+    background: rgba(16, 185, 129, 0.1);
+    border-color: #10b981;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+  }
+  
+  .btn-disabled {
+    background: rgba(107, 114, 128, 0.05);
+    border-color: rgba(107, 114, 128, 0.2);
+    color: #9ca3af;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+  
+  .btn-disabled:hover {
+    transform: none;
+    box-shadow: none;
+    background: rgba(107, 114, 128, 0.05);
+    border-color: rgba(107, 114, 128, 0.2);
+  }
+  
+  .nav-arrow {
+    font-size: 1rem;
+    font-weight: bold;
+  }
+  
+  .nav-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+  
+  @media (max-width: 768px) {
+    .blog-detail-page {
+      padding: 6rem 1rem 2rem 1rem;
+    }
+    
+    .blog-detail-page h1 {
+      font-size: 2rem;
+    }
+    
+    .blog-detail-page img {
+      height: 200px;
+    }
+    
+    .blog-detail-page .content h2 {
+      font-size: 1.5rem;
+    }
+    
+    .blog-detail-page .content h3 {
+      font-size: 1.25rem;
+    }
+    
+    .nav-buttons {
+      max-width: none;
+      gap: 1rem;
+    }
+    
+    .btn-nav {
+      flex: 1;
+      min-width: auto;
+      justify-content: center;
+    }
+  }
+</style>

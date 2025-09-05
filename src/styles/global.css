@@ -1,0 +1,496 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* CSS Variables for vivid theme */
+:root {
+  --bg: #ffffff;
+  --fg: #2d3748;
+  --accent: #3182ce;
+  --accent-hover: #2c5aa0;
+  --accent-light: #bee3f8;
+  --text-secondary: #4a5568;
+  --text-muted: #718096;
+  --code-bg: #f7fafc;
+  --border: #e2e8f0;
+  --border-light: #edf2f7;
+  --card-bg: #ffffff;
+  --shadow: rgba(49, 130, 206, 0.08);
+  --shadow-hover: rgba(49, 130, 206, 0.15);
+  --success: #38a169;
+  --warning: #ed8936;
+  --info: #0bc5ea;
+}
+
+/* Removed dark theme media query to force light theme */
+
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  font-weight: 400;
+  line-height: 1.7;
+  color: var(--fg);
+  background-color: var(--bg);
+  letter-spacing: -0.01em;
+}
+
+/* Modern Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+  color: var(--fg);
+  letter-spacing: -0.02em;
+}
+
+h1 { 
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+h2 { 
+  font-size: clamp(2rem, 4vw, 2.5rem);
+  margin-bottom: 1.25rem;
+}
+h3 { 
+  font-size: clamp(1.25rem, 3vw, 1.5rem);
+  margin-bottom: 1rem;
+}
+
+p {
+  margin-bottom: 1.5rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--accent-hover);
+}
+
+/* Container and layout */
+.container {
+  max-width: 1200px;
+  width: 90%;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Header styles now in Header.astro component */
+
+/* Main content */
+main {
+  padding: 2rem 0;
+}
+
+section {
+  margin-bottom: 5rem;
+}
+
+/* Project cards */
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2.5rem;
+  margin: 3rem 0;
+}
+
+.project-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 1px 3px var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.project-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--info) 50%, var(--success) 100%);
+  opacity: 0.8;
+}
+
+.project-card:hover {
+  box-shadow: 0 8px 25px var(--shadow-hover);
+  transform: translateY(-2px);
+  border-color: var(--accent);
+}
+
+.project-card:hover::before {
+  height: 6px;
+  opacity: 1;
+}
+
+.project-card h3 {
+  margin-bottom: 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--fg);
+}
+
+.project-card p {
+  color: var(--text-secondary);
+  margin-bottom: 1.25rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.tech-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.tech-tag {
+  background: linear-gradient(135deg, var(--accent-light) 0%, var(--code-bg) 100%);
+  border: 1px solid var(--border);
+  padding: 0.4rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--accent);
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.tech-tag:hover {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px var(--shadow-hover);
+}
+
+.tech-tag:nth-child(even) {
+  background: linear-gradient(135deg, #fed7d7 0%, #fef5e7 100%);
+  color: var(--warning);
+  border-color: #fbd38d;
+}
+
+.tech-tag:nth-child(even):hover {
+  background: var(--warning);
+  color: white;
+  border-color: var(--warning);
+}
+
+.tech-tag:nth-child(3n) {
+  background: linear-gradient(135deg, #c6f6d5 0%, #e6fffa 100%);
+  color: var(--success);
+  border-color: #9ae6b4;
+}
+
+.tech-tag:nth-child(3n):hover {
+  background: var(--success);
+  color: white;
+  border-color: var(--success);
+}
+
+/* Gallery Layout */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  gap: 2.5rem;
+  margin: 3rem 0;
+}
+
+.gallery-item {
+  background: var(--card-bg);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px var(--shadow);
+  transition: all 0.3s ease;
+  border: 1px solid var(--border);
+}
+
+.gallery-item:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 32px var(--shadow-hover);
+  border-color: var(--border-light);
+}
+
+.gallery-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.gallery-image {
+  width: 100%;
+  height: 250px;
+  overflow: hidden;
+}
+
+.gallery-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.gallery-item:hover .gallery-image img {
+  transform: scale(1.05);
+}
+
+.gallery-content {
+  padding: 2rem;
+}
+
+.gallery-content h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: var(--fg);
+}
+
+.gallery-content p {
+  font-size: 0.95rem;
+  margin-bottom: 1.25rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.gallery-content .tech-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.gallery-content .tech-tag {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  padding: 0.4rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+/* Blog posts */
+.blog-grid {
+  display: grid;
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+/* Blog content styling */
+.content {
+  line-height: 1.8;
+  color: #333;
+}
+
+/* Project detail page images - force smaller size */
+.project-detail-page img,
+.project-content img,
+img[alt="YelpCamp Homepage"] {
+  max-width: 500px !important;
+  width: auto !important;
+  height: auto !important;
+  max-height: 300px !important;
+  object-fit: contain !important;
+  display: block !important;
+  margin: 1.5rem auto !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+.content h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 2rem 0 1rem 0;
+  color: #333;
+}
+
+.content h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 1.5rem 0 0.75rem 0;
+  color: #333;
+}
+
+.content p {
+  margin-bottom: 1.5rem;
+  color: #666;
+  line-height: 1.8;
+}
+
+.content ul, .content ol {
+  margin: 1.5rem 0;
+  padding-left: 2rem;
+}
+
+.content li {
+  margin-bottom: 0.5rem;
+  color: #666;
+}
+
+.content blockquote {
+  border-left: 4px solid #0066cc;
+  padding-left: 1.5rem;
+  margin: 2rem 0;
+  font-style: italic;
+  color: #555;
+}
+
+.content code {
+  background: #f5f5f5;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+}
+
+.content pre {
+  background: #f5f5f5;
+  padding: 1.5rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+}
+
+.content pre code {
+  background: none;
+  padding: 0;
+}
+
+.blog-post {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 1.5rem;
+}
+
+.blog-post:last-child {
+  border-bottom: none;
+}
+
+.blog-post h3 {
+  margin-bottom: 0.5rem;
+}
+
+.blog-post time {
+  color: #999;
+  font-size: 0.9rem;
+}
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  padding: 0.875rem 1.75rem;
+  background: transparent;
+  color: #374151;
+  border: 2px solid #374151;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 1rem;
+  text-align: center;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.btn:hover {
+  background: #10b981;
+  color: white;
+  border-color: #10b981;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--accent);
+  border-color: var(--border);
+}
+
+.btn-secondary:hover {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+/* Footer */
+footer {
+  border-top: 1px solid #eee;
+  padding: 2rem 0;
+  margin-top: 4rem;
+  text-align: center;
+}
+
+footer p {
+  color: #999;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* Social links */
+.social-links {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.social-links a {
+  color: #666;
+  padding: 0.5rem;
+}
+
+.social-links a:hover {
+  color: #0066cc;
+}
+
+.social-links svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    width: 90%;
+    padding: 0 1rem;
+  }
+  
+  header nav {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .nav-links {
+    gap: 1rem;
+  }
+  
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.5rem; }
+  
+  .projects-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .gallery-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .gallery-image {
+    height: 200px;
+  }
+}

@@ -1,0 +1,143 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map((project) => ({
+    params: { slug: project.slug },
+    props: project,
+  }));
+}
+
+const project = Astro.props;
+const { Content } = await project.render();
+---
+
+<BaseLayout title={project.data.title} description={project.data.description}>
+  <article class="project-detail-page">
+    <div class="project-header">
+      <h1>{project.data.title}</h1>
+      
+      <div class="project-links">
+        {project.data.github && (
+          <a 
+            href={project.data.github} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            class="btn"
+          >
+            View on GitHub
+          </a>
+        )}
+        {project.data.demo && (
+          <a 
+            href={project.data.demo} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            class="btn btn-secondary"
+          >
+            Live Demo
+          </a>
+        )}
+      </div>
+    </div>
+    
+    <div class="project-content">
+      <Content />
+    </div>
+    
+    <div class="back-link">
+      <a href="/#projects" class="btn btn-secondary">
+        ← Back to Projects
+      </a>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .project-detail-page {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 8rem 2rem 3rem 2rem;
+  }
+
+  /* Force image styles with highest specificity */
+  .project-detail-page .project-content img,
+  .project-detail-page .project-content p img,
+  .project-content img[src*="cloudinary"],
+  img[alt="YelpCamp Homepage"] {
+    max-width: 500px !important;
+    width: 500px !important;
+    height: auto !important;
+    max-height: 280px !important;
+    object-fit: contain !important;
+    border-radius: 8px !important;
+    margin: 1.5rem auto !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+    display: block !important;
+    transform: scale(1) !important;
+  }
+  
+  .project-header {
+    margin-bottom: 3rem;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 2rem;
+  }
+  
+  .project-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+  }
+  
+  .project-links {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  
+  .project-detail-page .btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background: #10b981;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    margin-right: 1rem;
+  }
+  
+  .project-detail-page .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  }
+  
+  .project-detail-page .btn-secondary {
+    background: transparent;
+    color: #6b7280;
+    border: 2px solid #6b7280;
+  }
+  
+  .project-detail-page .btn-secondary:hover {
+    background: #6b7280;
+    color: white;
+  }
+  
+  .back-link {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e2e8f0;
+  }
+  
+  @media (max-width: 768px) {
+    .project-detail-page {
+      padding: 6rem 1rem 2rem 1rem;
+    }
+    
+    .project-header h1 {
+      font-size: 2rem;
+    }
+  }
+</style>

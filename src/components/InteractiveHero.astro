@@ -1,0 +1,60 @@
+---
+// src/components/InteractiveHero.astro
+---
+
+<section id="hero" class="relative h-screen flex items-center justify-center text-center overflow-hidden">
+    <!-- Interactive Hero Component -->
+    <div id="interactive-hero"></div>
+    
+    <!-- Fallback/Static Content (for SEO and no-JS users) -->
+    <div class="hero-fallback max-w-4xl mx-auto px-6 z-10">
+      <h1 class="display-text text-fg mb-6 animate-text-glow">
+        Hi, I'm <span class="rainbow-text">Peggie</span>
+      </h1>
+      <p class="lead-text text-muted mb-8 max-w-3xl mx-auto">
+        Developer Advocate & Software Engineer turning cloud-fintech complexity into clear demos, tutorials, and tools.
+      </p>
+      <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mb-16">
+        <a href="/projects/" class="btn-primary">
+          View Projects
+        </a>
+        <a href="/blog/" class="btn-secondary hover-lift">
+          Read Blog
+        </a>
+      </div>
+    </div>
+  
+    <!-- Scroll Down Indicator -->
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce-gentle z-20">
+      <div class="flex flex-col items-center text-muted hover:text-accent transition-colors cursor-pointer animate-pulse-color" onclick="document.getElementById('content').scrollIntoView({behavior: 'smooth'})">
+        <span class="text-sm font-medium mb-2 mono-text">Scroll Down</span>
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+        </svg>
+      </div>
+    </div>
+  </section>
+  
+  <script>
+    import { InteractiveHeroClient } from './InteractiveHero.client.js';
+    
+    // Initialize the interactive component when DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      const container = document.getElementById('interactive-hero');
+      const fallback = document.querySelector('.hero-fallback');
+      
+      if (container && fallback) {
+        // Initialize React component
+        const interactiveHero = new InteractiveHeroClient(container);
+        
+        // Hide fallback content once interactive version loads
+        fallback.style.display = 'none';
+      }
+    });
+  </script>
+  
+  <style>
+    #hero {
+      background: linear-gradient(135deg, #fefefe 0%, #f8fafc 50%, #e2e8f0 100%);
+    }
+  </style>

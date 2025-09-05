@@ -1,0 +1,49 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const title = 'Blog';
+const description = 'Articles on developer advocacy, cloud, and software engineering';
+
+// Fetch all blog posts from the content collection
+const posts = await getCollection('blog');
+
+// Sort by publication date (newest first)
+posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<BaseLayout title={title} description={description}>
+  <div class="container">
+    <section>
+      <h1>Blog</h1>
+      <p>Articles on developer advocacy, cloud technologies, and engineering best practices</p>
+      
+      <div class="blog-grid">
+        {posts.map(post => (
+          <article class="blog-post">
+            <a href={`/blog/${post.slug}/`}>
+              <h3>
+                {post.data.title}
+              </h3>
+              <p>
+                No description available
+              </p>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+                <time>
+                  {post.data.pubDate.toLocaleDateString(undefined, {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                  })}
+                </time>
+                <span style="color: #0066cc;">
+                  Read More →
+                </span>
+              </div>
+            </a>
+          </article>
+        ))}
+      </div>
+    </section>
+  </div>
+</BaseLayout>
