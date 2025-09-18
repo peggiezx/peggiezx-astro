@@ -48,19 +48,17 @@ const featuredVideos = [
     description: 'Complete walkthrough of YelpCamp featuring user authentication, image uploads, interactive maps, and CRUD operations',
     thumbnail: 'https://img.youtube.com/vi/M-DZPvMEdsI/maxresdefault.jpg',
     url: 'https://youtube.com/watch?v=M-DZPvMEdsI',
-    duration: '12:30',
     publishedAt: new Date('2024-02-01'),
     tags: ['Node.js', 'Express', 'MongoDB']
   },
   {
-    id: 'placeholder-2',
-    title: 'FastAPI Complete Tutorial',
-    description: 'Build a full-stack application with FastAPI and PostgreSQL from zero to deployment',
-    thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg',
-    url: 'https://youtube.com/watch?v=dQw4w9WgXcQ',
-    duration: '18:42',
-    publishedAt: new Date('2024-01-10'),
-    tags: ['FastAPI', 'Python', 'Backend']
+    id: 'circleshare-demo',
+    title: 'CircleShare - Social Journal Application',
+    description: 'A modern social journal application that enables users to document their daily experiences and share them with their close circle of friends',
+    thumbnail: 'https://img.youtube.com/vi/Nh4BXeyPGoI/maxresdefault.jpg',
+    url: 'https://youtube.com/watch?v=Nh4BXeyPGoI',
+    publishedAt: new Date('2024-09-18'),
+    tags: ['React', 'Node.js', 'MongoDB']
   }
 ];
 
@@ -71,6 +69,7 @@ const featuredProjects = allProjects.filter(project => project.data.featured);
 // Project images mapping
 const projectImages = {
   'yelpcamp': yelpCampImage.src,
+  'circleshare': 'https://res.cloudinary.com/peggiexplode/image/upload/v1758221770/Screenshot_2025-09-18_at_12.54.24_PM_nebwmt.png',
   // Add more project images here as needed
 };
 ---
@@ -315,7 +314,6 @@ const projectImages = {
                   <path d="M8 5v14l11-7z"/>
                 </svg>
               </div>
-              <span class="video-duration">{video.duration}</span>
             </a>
             
             <div class="video-content">
@@ -356,7 +354,6 @@ const projectImages = {
                   <path d="M8 5v14l11-7z"/>
                 </svg>
               </div>
-              <span class="video-duration">{video.duration}</span>
             </a>
             
             <div class="video-content">
@@ -392,7 +389,6 @@ const projectImages = {
         <article class="video-card placeholder-video hidden-video" style="display: none;">
           <div class="video-thumbnail placeholder-video-thumb">
             <div class="placeholder-video-content">📹</div>
-            <span class="video-duration">--:--</span>
           </div>
           
           <div class="video-content">
@@ -418,7 +414,6 @@ const projectImages = {
         <article class="video-card placeholder-video hidden-video" style="display: none;">
           <div class="video-thumbnail placeholder-video-thumb">
             <div class="placeholder-video-content">🎬</div>
-            <span class="video-duration">--:--</span>
           </div>
           
           <div class="video-content">
