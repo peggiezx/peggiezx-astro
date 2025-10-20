@@ -1,5 +1,4 @@
 ---
-import { PERSONAL_INFO } from '../consts';
 ---
 
 <section class="hero">
@@ -13,7 +12,7 @@ import { PERSONAL_INFO } from '../consts';
 
     <div class="hero-right">
       <div class="skills">
-        <h3>Technologies</h3>
+        <h3 class="text-center">Technologies</h3>
         <div class="skills-grid">
         <!-- Git -->
         <div class="skill">
@@ -92,20 +91,20 @@ import { PERSONAL_INFO } from '../consts';
     justify-content: center;
     align-items: center;
     position: relative;
-    background: url('/images/hero-bg.png') center/cover no-repeat;
+    background: url('/images/hero-bg-2.png') center/cover no-repeat;
     padding-top: 80px;
     box-sizing: border-box;
   }
   
   .hero-container {
     max-width: 1200px;
-    width: calc(100% - 4rem);
+    width: 90%;
     margin: 0 auto;
     display: grid;
     grid-template-columns: 60% 40%;
     gap: 4rem;
     align-items: center;
-    padding: 0 2rem;
+    padding: 0 1.5rem;
     flex: 1;
     max-height: calc(100vh - 160px);
   }
@@ -113,12 +112,14 @@ import { PERSONAL_INFO } from '../consts';
   .hero-left {
     text-align: left;
     min-width: 0;
+    padding-left: 2rem;
   }
   
   .hero-right {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     min-width: 0;
+    padding-left: 2rem;
   }
   
   .greeting {
@@ -176,10 +177,9 @@ import { PERSONAL_INFO } from '../consts';
   }
   
   .skills {
-    text-align: center;
+    text-align: left;
     width: 100%;
     max-width: 400px;
-    margin: 0 auto;
   }
   
   .skills h3 {
@@ -194,7 +194,6 @@ import { PERSONAL_INFO } from '../consts';
     grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
     gap: 2rem;
     max-width: 400px;
-    margin: 0 auto;
   }
   
   .skill {
@@ -281,6 +280,16 @@ import { PERSONAL_INFO } from '../consts';
     }
     
     .hero-left {
+      text-align: center;
+      padding-left: 0;
+    }
+    
+    .hero-right {
+      justify-content: center;
+      padding-left: 0;
+    }
+    
+    .skills {
       text-align: center;
     }
     

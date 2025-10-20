@@ -3,6 +3,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import yelpCampImage from '../assets/projects/yelpcamp.png';
+import ticTacToeImage from '../assets/projects/game-logo.png';
 
 // Get blog posts organized by project
 const allPosts = await getCollection('blog');
@@ -46,19 +49,17 @@ const featuredVideos = [
     description: 'Complete walkthrough of YelpCamp featuring user authentication, image uploads, interactive maps, and CRUD operations',
     thumbnail: 'https://img.youtube.com/vi/M-DZPvMEdsI/maxresdefault.jpg',
     url: 'https://youtube.com/watch?v=M-DZPvMEdsI',
-    duration: '12:30',
     publishedAt: new Date('2024-02-01'),
     tags: ['Node.js', 'Express', 'MongoDB']
   },
   {
-    id: 'placeholder-2',
-    title: 'FastAPI Complete Tutorial',
-    description: 'Build a full-stack application with FastAPI and PostgreSQL from zero to deployment',
-    thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg',
-    url: 'https://youtube.com/watch?v=dQw4w9WgXcQ',
-    duration: '18:42',
-    publishedAt: new Date('2024-01-10'),
-    tags: ['FastAPI', 'Python', 'Backend']
+    id: 'circleshare-demo',
+    title: 'CircleShare - Social Journal Application',
+    description: 'A modern social journal application that enables users to document their daily experiences and share them with their close circle of friends',
+    thumbnail: 'https://img.youtube.com/vi/Nh4BXeyPGoI/maxresdefault.jpg',
+    url: 'https://youtube.com/watch?v=Nh4BXeyPGoI',
+    publishedAt: new Date('2024-09-18'),
+    tags: ['React', 'Node.js', 'MongoDB']
   }
 ];
 
@@ -68,7 +69,9 @@ const featuredProjects = allProjects.filter(project => project.data.featured);
 
 // Project images mapping
 const projectImages = {
-  'yelpcamp': '/src/assets/projects/yelpcamp.png',
+  'yelpcamp': yelpCampImage.src,
+  'circleshare': 'https://res.cloudinary.com/peggiexplode/image/upload/v1758221770/Screenshot_2025-09-18_at_12.54.24_PM_nebwmt.png',
+  'tic-tac-toe': ticTacToeImage.src,
   // Add more project images here as needed
 };
 ---
@@ -84,11 +87,17 @@ const projectImages = {
       </p>
 
       <div class="gallery-grid" id="projects-grid" style="margin-left: 2rem; gap: 3rem;">
-        {featuredProjects.slice(0, 2).map(project => (
+        {featuredProjects.slice(0, 3).map(project => (
         <div class="gallery-item initial-item">
           <a href={`/projects/${project.slug}/`} class="gallery-link">
             <div class="gallery-image">
-              {projectImages[project.slug] && <img src={projectImages[project.slug]} alt={project.data.title} />}
+              {project.slug === 'yelpcamp' ? (
+                <Image src={yelpCampImage} alt={project.data.title} />
+              ) : project.slug === 'tic-tac-toe' ? (
+                <Image src={ticTacToeImage} alt={project.data.title} />
+              ) : (
+                projectImages[project.slug] && <img src={projectImages[project.slug]} alt={project.data.title} />
+              )}
             </div>
             <div class="gallery-content">
               <h3>{project.data.title}</h3>
@@ -105,11 +114,17 @@ const projectImages = {
         </div>
         ))}
         
-        {featuredProjects.slice(2).map(project => (
+        {featuredProjects.slice(3).map(project => (
         <div class="gallery-item hidden-item" style="display: none;">
           <a href={`/projects/${project.slug}/`} class="gallery-link">
             <div class="gallery-image">
-              {projectImages[project.slug] && <img src={projectImages[project.slug]} alt={project.data.title} />}
+              {project.slug === 'yelpcamp' ? (
+                <Image src={yelpCampImage} alt={project.data.title} />
+              ) : project.slug === 'tic-tac-toe' ? (
+                <Image src={ticTacToeImage} alt={project.data.title} />
+              ) : (
+                projectImages[project.slug] && <img src={projectImages[project.slug]} alt={project.data.title} />
+              )}
             </div>
             <div class="gallery-content">
               <h3>{project.data.title}</h3>
@@ -305,7 +320,6 @@ const projectImages = {
                   <path d="M8 5v14l11-7z"/>
                 </svg>
               </div>
-              <span class="video-duration">{video.duration}</span>
             </a>
             
             <div class="video-content">
@@ -346,7 +360,6 @@ const projectImages = {
                   <path d="M8 5v14l11-7z"/>
                 </svg>
               </div>
-              <span class="video-duration">{video.duration}</span>
             </a>
             
             <div class="video-content">
@@ -382,7 +395,6 @@ const projectImages = {
         <article class="video-card placeholder-video hidden-video" style="display: none;">
           <div class="video-thumbnail placeholder-video-thumb">
             <div class="placeholder-video-content">📹</div>
-            <span class="video-duration">--:--</span>
           </div>
           
           <div class="video-content">
@@ -408,7 +420,6 @@ const projectImages = {
         <article class="video-card placeholder-video hidden-video" style="display: none;">
           <div class="video-thumbnail placeholder-video-thumb">
             <div class="placeholder-video-content">🎬</div>
-            <span class="video-duration">--:--</span>
           </div>
           
           <div class="video-content">
@@ -444,7 +455,7 @@ const projectImages = {
 
 <style>
   body {
-    background: url('/images/hero-bg-2.png') center/cover no-repeat fixed;
+    background: url('/images/hero-bg-3.png') center/cover no-repeat fixed;
   }
   
   /* Fix scroll offset for fixed header */
@@ -509,7 +520,7 @@ const projectImages = {
   /* Project cards styling */
   .gallery-grid {
     display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
     gap: 2rem !important;
     width: calc(100% - 4rem) !important;
     margin: 0 2rem 0 2rem !important;
