@@ -5,6 +5,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
 import yelpCampImage from '../assets/projects/yelpcamp.png';
+import ticTacToeImage from '../assets/projects/game-logo.png';
 
 // Get blog posts organized by project
 const allPosts = await getCollection('blog');
@@ -70,6 +71,7 @@ const featuredProjects = allProjects.filter(project => project.data.featured);
 const projectImages = {
   'yelpcamp': yelpCampImage.src,
   'circleshare': 'https://res.cloudinary.com/peggiexplode/image/upload/v1758221770/Screenshot_2025-09-18_at_12.54.24_PM_nebwmt.png',
+  'tic-tac-toe': ticTacToeImage.src,
   // Add more project images here as needed
 };
 ---
@@ -85,12 +87,14 @@ const projectImages = {
       </p>
 
       <div class="gallery-grid" id="projects-grid" style="margin-left: 2rem; gap: 3rem;">
-        {featuredProjects.slice(0, 2).map(project => (
+        {featuredProjects.slice(0, 3).map(project => (
         <div class="gallery-item initial-item">
           <a href={`/projects/${project.slug}/`} class="gallery-link">
             <div class="gallery-image">
               {project.slug === 'yelpcamp' ? (
                 <Image src={yelpCampImage} alt={project.data.title} />
+              ) : project.slug === 'tic-tac-toe' ? (
+                <Image src={ticTacToeImage} alt={project.data.title} />
               ) : (
                 projectImages[project.slug] && <img src={projectImages[project.slug]} alt={project.data.title} />
               )}
@@ -110,12 +114,14 @@ const projectImages = {
         </div>
         ))}
         
-        {featuredProjects.slice(2).map(project => (
+        {featuredProjects.slice(3).map(project => (
         <div class="gallery-item hidden-item" style="display: none;">
           <a href={`/projects/${project.slug}/`} class="gallery-link">
             <div class="gallery-image">
               {project.slug === 'yelpcamp' ? (
                 <Image src={yelpCampImage} alt={project.data.title} />
+              ) : project.slug === 'tic-tac-toe' ? (
+                <Image src={ticTacToeImage} alt={project.data.title} />
               ) : (
                 projectImages[project.slug] && <img src={projectImages[project.slug]} alt={project.data.title} />
               )}
@@ -449,7 +455,7 @@ const projectImages = {
 
 <style>
   body {
-    background: url('/images/hero-bg-2.png') center/cover no-repeat fixed;
+    background: url('/images/hero-bg-3.png') center/cover no-repeat fixed;
   }
   
   /* Fix scroll offset for fixed header */
@@ -514,7 +520,7 @@ const projectImages = {
   /* Project cards styling */
   .gallery-grid {
     display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
     gap: 2rem !important;
     width: calc(100% - 4rem) !important;
     margin: 0 2rem 0 2rem !important;
